@@ -1,6 +1,0 @@
-// this is a comment
-This is not a comment
-// but this is now a comment as well
-This is also not a comment
-This is a test // because you should not be able to see this
-      This line has spaces on both ends.         
