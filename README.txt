@@ -1,3 +1,3 @@
 Minecraft-Assembler
 
-A simple assembler for a Minecraft Redstone Computer.
+An assembler, disassembler, and simulator for the Mincraft redstone computer project.
