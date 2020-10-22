@@ -5,7 +5,7 @@
 // redstone torches must go in the program memory
 
 "use strict";
-const AssemblerVersion = "3.0.0";
+const AssemblerVersion = "3.2.0";
 
 // Revision History
 //
@@ -48,10 +48,15 @@ const AssemblerVersion = "3.0.0";
 // 3.0.1	10/21/2020	Changes in this version:
 //							-Fixed a bug with hex output
 //
-// 3.1.0	10/21/2020	Changes in this version
+// 3.1.0	10/21/2020	Changes in this version:
 //							-Automatically set the intructions to all lowercase
 //							when parsing
 //							-Added in the rest of the opcode map
+//
+// 3.2.0	10/22/2020	Changes in this version:
+//							-Fixed bugs with the opcode hash
+//							-Reordered the opcode hash to make more sense
+//							-Other minor functional changes
 
 // Version information
 this.Version = AssemblerVersion
@@ -148,39 +153,44 @@ const instructionFields = {
 } // end: hash intructionFields
 
 // Instruction Validation table
+//                                     Opcode Map
+//                                    Instn<22:20>
+//                  000    001   010   011   100   101   110   111
+//                 +-----+-----+-----+-----+-----+-----+-----+-----+
+//               00| or  | and |     | not | cmp |     | add | sub |
+//                 +-----+-----+-----+-----+-----+-----+-----+-----+
+//               01| ori | andi|     | noti| cmpi|     | addi| subi|
+// Instn<23:33>    +-----+-----+-----+-----+-----+-----+-----+-----+
+//               10| brz | bro |     |     |     |     |     |     |
+//                 +-----+-----+-----+-----+-----+-----+-----+-----+
+//               11| ld  | st  |     |     |     |     |     | mf  |
+//                 +-----+-----+-----+-----+-----+-----+-----+-----+
 const instructionValidationTable = {
-	"or" : {opcode: 0, argCount: 3, args:["rw","ra","rb"]},
-	"ori" : {opcode: 8, argCount: 3, args:["rw","ra","imm"]},
-	"brz" : {opcode: 16, argCount: 3, args:["rb","label"]},
-	"ld" : {opcode: 24, argCount: 3, args:["rw","ra","imm"]},
-	"and" : {opcode: 1, argCount: 3, args:["rw","ra","rb"]},
-	"andi" : {opcode: 9, argCount: 3, args:["rw","ra","imm"]},
-	"bro" : {opcode: 17, argCount: 3, args:["rw","ra","imm"]},
-	"st" : {opcode: 25, argCount: 3, args:["rw","ra","imm"]},
-	"null" : {opcode: 2, argCount: 0, args:[]},
-	"null" : {opcode: 10, argCount: 0, args:[]},
-	"null" : {opcode: 18, argCount: 0, args:[]},
-	"null" : {opcode: 26, argCount: 0, args:[]},
-	"not" : {opcode: 3, argCount: 3, args:["rw","rb"]},
-	"noti" : {opcode: 11, argCount: 3, args:["rw","imm"]},
-	"null" : {opcode: 19, argCount: 0, args:[]},
-	"null" : {opcode: 27, argCount: 0, args:[]},
-	"cmp" : {opcode: 4, argCount: 3, args:["rw","ra","rb"]},
+	// First row of opcode table
+	"or"  :  {opcode:  0, argCount: 3, args:["rw","ra","rb"]},
+	"and" :  {opcode:  1, argCount: 3, args:["rw","ra","rb"]},
+	"not" :  {opcode:  3, argCount: 2, args:["rw","rb"]},
+	"cmp" :  {opcode:  4, argCount: 3, args:["rw","ra","rb"]},
+	"add" :  {opcode:  6, argCount: 3, args:["rw","ra","rb"]},
+	"sub" :  {opcode:  7, argCount: 3, args:["rw","ra","rb"]},
+	// Second row of opcode table
+	"ori"  : {opcode:  8, argCount: 3, args:["rw","ra","imm"]},
+	"andi" : {opcode:  9, argCount: 3, args:["rw","ra","imm"]},
+	"noti" : {opcode: 11, argCount: 2, args:["rw","imm"]},
 	"cmpi" : {opcode: 12, argCount: 3, args:["rw","ra","imm"]},
-	"null" : {opcode: 20, argCount: 0, args:[]},
-	"null" : {opcode: 28, argCount: 0, args:[]},
-	"null" : {opcode: 5, argCount: 0, args:[]},
-	"null" : {opcode: 13, argCount: 0, args:[]},
-	"null" : {opcode: 21, argCount: 0, args:[]},
-	"null" : {opcode: 29, argCount: 0, args:[]},
-	"add" : {opcode: 6, argCount: 3, args:["rw","ra","rb"]},
 	"addi" : {opcode: 14, argCount: 3, args:["rw","ra","imm"]},
-	"null" : {opcode: 22, argCount: 0, args:[]},
-	"null" : {opcode: 30, argCount: 0, args:[]},
-	"sub" : {opcode: 7, argCount: 3, args:["rw","ra","rb"]},
 	"subi" : {opcode: 15, argCount: 3, args:["rw","ra","imm"]},
-	"null" : {opcode: 23, argCount: 0, args:[]},
-	"mf" : {opcode: 31, argCount: 3, args:["rw","ra","imm"]}
+	// Third row of opcode table
+	"brz" :  {opcode: 16, argCount: 2, args:["rb","label"]},
+	"bro" :  {opcode: 17, argCount: 2, args:["rb","label"]},
+	// Fourth row of opcode table
+	"ld" :   {opcode: 24, argCount: 3, args:["rw","ra","imm"]},
+	"st" :   {opcode: 25, argCount: 3, args:["rw","ra","imm"]},
+	"mf" :   {opcode: 31, argCount: 3, args:["rw","ra","imm"]},
+	// pseudo instructions that provide more intuitive access to certain instructions
+	"nop" :  {opcode:  0, argCount: 0, args:[]},
+	"li"  :  {opcode:  8, argCount: 2, args:["rw","imm"]},
+	"br"  :  {opcode: 16, argCount: 1, args:["label"]},
 } // end: hash instructionValidationTable
 
 
@@ -271,9 +281,9 @@ for (let i = 0; i < lines.length; i++) {
     	AssemblerMessage(`Unable to build instruction for ${line}: ${buildResult.message}`)
 	} 
 	else {
-		writeDataToFile(outputDirectory, `0x${buildResult.instruction.toString(16)}` + "\n")
+		writeDataToFile(outputDirectory, `0x${buildResult.instruction.toString(16).padStart(7, "0")}` + "\n")
 
-    	AssemblerMessage(`Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16)}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
+    	AssemblerMessage(`Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16).padStart(7, "0")}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
   	}
 
 }
