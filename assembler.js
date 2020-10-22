@@ -10,8 +10,8 @@ const AssemblerVersion = "3.0.0";
 // Revision History
 //
 //  version    date                     Change
-//  ------- ----------  -------------------------------------------------------
-//	1.0.0	10/12/2020	Changes in this version:
+// -------  ----------  -------------------------------------------------------
+// 1.0.0	10/12/2020	Changes in this version:
 //							-AssemblerMessage function to organize and handle
 //							console outputs
 //							-replaceStringInData function that takes a file,
@@ -20,7 +20,7 @@ const AssemblerVersion = "3.0.0";
 //							the correct value (as well as removing blank space
 //							before or after the final string)
 //
-//	2.0.0	10/13/2020	Changes in this version:
+// 2.0.0	10/13/2020	Changes in this version:
 //							-Added the AssemblerMessageEnable constant to allow
 //							console messages to be enabled/disabled
 //							-Added a for-loop and the executeLine function to
@@ -33,7 +33,7 @@ const AssemblerVersion = "3.0.0";
 //								-Moved the value of fs.fileReadSync to the data
 //								variable which is used later in the 
 //								replaceStringInData
-//	3.0.0	10/21/2020	Changes in this version:
+// 3.0.0	10/21/2020	Changes in this version:
 //							-Added constants for the input and output directories
 //							at the top of the program for easy editing
 //							-Added instructionFields and instructionValidationTable
@@ -47,6 +47,11 @@ const AssemblerVersion = "3.0.0";
 //
 // 3.0.1	10/21/2020	Changes in this version:
 //							-Fixed a bug with hex output
+//
+// 3.1.0	10/21/2020	Changes in this version
+//							-Automatically set the intructions to all lowercase
+//							when parsing
+//							-Added in the rest of the opcode map
 
 // Version information
 this.Version = AssemblerVersion
@@ -144,8 +149,38 @@ const instructionFields = {
 
 // Instruction Validation table
 const instructionValidationTable = {
-	"ori" : {opcode: 0x8, argCount: 3, args:["rw","ra","imm"]},
-	
+	"or" : {opcode: 0, argCount: 3, args:["rw","ra","rb"]},
+	"ori" : {opcode: 8, argCount: 3, args:["rw","ra","imm"]},
+	"brz" : {opcode: 16, argCount: 3, args:["rb","label"]},
+	"ld" : {opcode: 24, argCount: 3, args:["rw","ra","imm"]},
+	"and" : {opcode: 1, argCount: 3, args:["rw","ra","rb"]},
+	"andi" : {opcode: 9, argCount: 3, args:["rw","ra","imm"]},
+	"bro" : {opcode: 17, argCount: 3, args:["rw","ra","imm"]},
+	"st" : {opcode: 25, argCount: 3, args:["rw","ra","imm"]},
+	"null" : {opcode: 2, argCount: 0, args:[]},
+	"null" : {opcode: 10, argCount: 0, args:[]},
+	"null" : {opcode: 18, argCount: 0, args:[]},
+	"null" : {opcode: 26, argCount: 0, args:[]},
+	"not" : {opcode: 3, argCount: 3, args:["rw","rb"]},
+	"noti" : {opcode: 11, argCount: 3, args:["rw","imm"]},
+	"null" : {opcode: 19, argCount: 0, args:[]},
+	"null" : {opcode: 27, argCount: 0, args:[]},
+	"cmp" : {opcode: 4, argCount: 3, args:["rw","ra","rb"]},
+	"cmpi" : {opcode: 12, argCount: 3, args:["rw","ra","imm"]},
+	"null" : {opcode: 20, argCount: 0, args:[]},
+	"null" : {opcode: 28, argCount: 0, args:[]},
+	"null" : {opcode: 5, argCount: 0, args:[]},
+	"null" : {opcode: 13, argCount: 0, args:[]},
+	"null" : {opcode: 21, argCount: 0, args:[]},
+	"null" : {opcode: 29, argCount: 0, args:[]},
+	"add" : {opcode: 6, argCount: 3, args:["rw","ra","rb"]},
+	"addi" : {opcode: 14, argCount: 3, args:["rw","ra","imm"]},
+	"null" : {opcode: 22, argCount: 0, args:[]},
+	"null" : {opcode: 30, argCount: 0, args:[]},
+	"sub" : {opcode: 7, argCount: 3, args:["rw","ra","rb"]},
+	"subi" : {opcode: 15, argCount: 3, args:["rw","ra","imm"]},
+	"null" : {opcode: 23, argCount: 0, args:[]},
+	"mf" : {opcode: 31, argCount: 3, args:["rw","ra","imm"]}
 } // end: hash instructionValidationTable
 
 
@@ -193,6 +228,7 @@ function replaceStringInData(directory, search, replace) {
 		// from the start and end of the line
 		let fileLine = fileLinesArray[i].replace(searchContent, replaceContent);
 		fileLine = fileLine.trim();
+		fileLine = fileLine.toLowerCase();
 
 		// Save each of the appended lines to a new array
 		if (fileLine.length !== 0) {
@@ -210,9 +246,18 @@ function replaceStringInData(directory, search, replace) {
 } // end: function replaceStringInData
 
 
-// Take the edited lines from replaceStringInData and execute them
+// Set up timestamp information to print to the output file as a comment
+let today = new Date();
+let date = today.getMonth() + '-' + (today.getDate()) + '-' + today.getFullYear();
+let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+let dateTime = date + ' ' + time;
+
+writeDataToFile(outputDirectory, "// assembler.js v" + AssemblerVersion + "\n" + "// " + dateTime + "\n");
+// Take the edited lines from replaceStringInData and compile them
 let lines = replaceStringInData(inputDirectory, /\/\/.*$/, "");
 
+
+// For each line, parse and build the line
 for (let i = 0; i < lines.length; i++) {
 
 	// Display and use the contents and length of each line
@@ -230,7 +275,6 @@ for (let i = 0; i < lines.length; i++) {
 
     	AssemblerMessage(`Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16)}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
   	}
-	// printParsedLine(line, matchStr);
 
 }
 
