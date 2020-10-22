@@ -246,7 +246,7 @@ function lineParse(line) {
   if (!buildResult.result) {
     console.log (`Unable to build instruction for ${line}: ${buildResult.message}`)
   } else {
-    console.log (`Assembled instruction for ${line} was 0x${buildResult.instruction}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
+    console.log (`Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16)}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
   }
 
 
