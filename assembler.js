@@ -44,6 +44,9 @@ const AssemblerVersion = "3.0.0";
 //							-Added function buildInstruction to take the instruction
 //							in assembly language, check for a valid opcode and
 //							arguments, and convernt it to hex for output
+//
+// 3.0.1	10/21/2020	Changes in this version:
+//							-Fixed a bug with hex output
 
 // Version information
 this.Version = AssemblerVersion
@@ -223,9 +226,9 @@ for (let i = 0; i < lines.length; i++) {
     	AssemblerMessage(`Unable to build instruction for ${line}: ${buildResult.message}`)
 	} 
 	else {
-		writeDataToFile(outputDirectory, `0x${buildResult.instruction}` + "\n")
+		writeDataToFile(outputDirectory, `0x${buildResult.instruction.toString(16)}` + "\n")
 
-    	AssemblerMessage(`Assembled instruction for ${line} was 0x${buildResult.instruction}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
+    	AssemblerMessage(`Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16)}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
   	}
 	// printParsedLine(line, matchStr);
 
