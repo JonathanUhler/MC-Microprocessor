@@ -5,6 +5,9 @@
 // redstone torches must go in the program memory
 
 "use strict";
+
+const { match } = require('assert');
+
 const AssemblerVersion = "3.2.0";
 
 // Revision History
@@ -58,14 +61,28 @@ const AssemblerVersion = "3.2.0";
 //							-Reordered the opcode hash to make more sense
 //							-Other minor functional changes
 
+// ============================================================================
+// Unix commands
+//
+// help [-cmd]:					prints info about the commands or about a specific
+//								command specified with the argument
+//
+// run:							runs the program
+//
+// directory {i/o} [path]:		change the directory for the input or output file
+//								if the "path" argument is given or print the
+//								current directory if no "path" is given
+//
+// clear {i/o}:					clears one of the files specified by the "i/o" argument
+//
+// debug {on/off}:				toggles the debug messages
+//
+// timeout {value}:				updates the timeout value (how long the program can run
+//								before automatically teminating)
+
 // Version information
 this.Version = AssemblerVersion
 AssemblerMessage("Assembler v" + this.Version);
-
-// Assembly Language Documentation
-// ----------------------------------------------------------------------------
-//
-//
 
 
 // ============================================================================
@@ -88,7 +105,7 @@ function AssemblerMessage(msg, ...args) {
 
 	const AssemblerMessageEnable = true;
 
-    let message = "A-MSG:    " + msg;
+    let message = "A-MSG:	" + msg;
     if (args.length > 0) {
       	message += " " + args.join(", ");
     }
@@ -101,13 +118,71 @@ function AssemblerMessage(msg, ...args) {
 
 
 // ============================================================================
+// printParsedLine
+//
+// Print the information returned from parseLine as an example of how to use
+// the information
+//
+// Arguments--
+//
+// line:		the literal line, as passed in to the assembler (written in
+//				assembly code)
+//
+// matchStr:	parsed line to print (this is the hash returned by lineParse)
+//
+function printParsedLine(line, matchStr) {
+	if (matchStr === undefined) {
+	  	AssemblerMessage(`Parse error found on line \"${line}\"`);
+	  	return;
+	}
+	AssemblerMessage(`	Parsed line is \"${line}\"`);
+	AssemblerMessage(`	label: \"${matchStr.label}\", opcode: \"${matchStr.opcode}\", argCount: ${matchStr.argCount}`)
+	for (let i = 0; i < matchStr.argCount; i++) {
+	  	AssemblerMessage(`		Argument ${i}: \"${matchStr.args[i]}\"`)
+	}
+} // end: function printParsedLine
+
+
+// ============================================================================
+// writeDataToFile
+//
+// Takes a given directory and some data and writes it to the file given.
+//
+// Arguments--
+//
+// directory:		The location of the file to write the data to on the
+//					current machine
+//
+// dataToWrite:		The data to be written to the specified file
+//
+// Returns--
+//
+// None
+//
+function writeDataToFile(directory, dataToWrite) {
+	var fs = require("fs");
+
+	fs.appendFile(directory, dataToWrite, (err) => {
+		if (err) {
+			throw err;
+		}
+		else {
+			AssemblerMessage(`Output file at \"${directory}\" written with data:	${dataToWrite}`)
+		}
+	});
+}
+
+
+// ============================================================================
 // GLOBAL VARIABLES
 //
 // The current real line number of the program counter (not included commented
 // lines or blank-space lines)
-let pc = 0;
+let pc = -1;
 // An object used to index the value of the pc using a label
 let labelHash = {};
+// Array of all the built instructions
+let instructionArray = [];
 // The locations of the input and output text files (edit from here for easy
 // access)
 const inputDirectory = '/Users/jonathan/Documents/VS Code/Assembler/input.asm';
@@ -163,7 +238,7 @@ const instructionFields = {
 // Instn<23:33>    +-----+-----+-----+-----+-----+-----+-----+-----+
 //               10| brz | bro |     |     |     |     |     |     |
 //                 +-----+-----+-----+-----+-----+-----+-----+-----+
-//               11| ld  | st  |     |     |     |     |     | mf  |
+//               11| ld  | st  |     |     |     |     | halt| mf  |
 //                 +-----+-----+-----+-----+-----+-----+-----+-----+
 const instructionValidationTable = {
 	// First row of opcode table
@@ -183,10 +258,12 @@ const instructionValidationTable = {
 	// Third row of opcode table
 	"brz" :  {opcode: 16, argCount: 2, args:["rb","label"]},
 	"bro" :  {opcode: 17, argCount: 2, args:["rb","label"]},
+	"mf" :   {opcode: 31, argCount: 3, args:["rw","ra","imm"]},
 	// Fourth row of opcode table
 	"ld" :   {opcode: 24, argCount: 3, args:["rw","ra","imm"]},
 	"st" :   {opcode: 25, argCount: 3, args:["rw","ra","imm"]},
-	"mf" :   {opcode: 31, argCount: 3, args:["rw","ra","imm"]},
+	"halt" : {opcode: 31, argCount: 1, args:["imm"]},
+	
 	// pseudo instructions that provide more intuitive access to certain instructions
 	"nop" :  {opcode:  0, argCount: 0, args:[]},
 	"li"  :  {opcode:  8, argCount: 2, args:["rw","imm"]},
@@ -218,7 +295,6 @@ function replaceStringInData(directory, search, replace) {
 
 	const fs = require('fs')
 
-
 	let searchContent = search;
 	let replaceContent = replace;
 
@@ -246,77 +322,99 @@ function replaceStringInData(directory, search, replace) {
 		}
 
 		// Print the line to console
-		AssemblerMessage("Line " + i + " Data: \n    " + fileLine);
+		AssemblerMessage("Line " + i + " Data:	" + fileLine);
 	}
 
 	// Return the edited array of lines
-	AssemblerMessage("Return value:", returnData);
+	AssemblerMessage("Replace string in data return:	", returnData);
 	return returnData;
 	
 } // end: function replaceStringInData
 
 
+
 // Set up timestamp information to print to the output file as a comment
 let today = new Date();
-let date = today.getMonth() + '-' + (today.getDate()) + '-' + today.getFullYear();
+let date = (today.getMonth() + 1) + '-' + (today.getDate()) + '-' + today.getFullYear();
 let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 let dateTime = date + ' ' + time;
 
-writeDataToFile(outputDirectory, "// assembler.js v" + AssemblerVersion + "\n" + "// " + dateTime + "\n");
+writeDataToFile(outputDirectory, "\n// assembler.js v" + AssemblerVersion + "\n" + "// " + dateTime + "\n");
 // Take the edited lines from replaceStringInData and compile them
 let lines = replaceStringInData(inputDirectory, /\/\/.*$/, "");
 
 
-// For each line, parse and build the line
+// For each line, search for a label, and if one is found then add it to the file
 for (let i = 0; i < lines.length; i++) {
+
+	pc++;
+	let line = lines[i];
+	let matchStr = lineParse(line); // lineParse returns some info about the line -- label, opcode, argCount, args
+
+	AssemblerMessage(`Searching for labels on line \"${line}\" with pc 0x${pc.toString(16).padStart(2, "0")}`)
+
+	// Put the labels at the top of the output
+	printAndParseLabels(matchStr.label, pc.toString(16))
+}
+
+pc = -1;
+
+// For each line, parse and build the 
+// This is where the actual assembly code is processed
+for (let i = 0; i < lines.length; i++) { // "lines" is the array of all the lines from the input file
+
+	pc++;
 
 	// Display and use the contents and length of each line
 	// Message should look like this 'Line: x has length: y, and states: "z"'
-	AssemblerMessage("Line: " + i, "has length: " + lines[i].length, "and states: \"" + lines[i] + "\"");
+	AssemblerMessage("Line: " + i, "has length " + lines[i].length, "and states \"" + lines[i] + "\"");
 	// For each line of the assembly code, parse and print it
-	let line = lines[i];
-	let matchStr = lineParse(line);
+	let line = lines[i]; // "line" is the placeholder for the single line currently being processed
+	let matchStr = lineParse(line); // lineParse returns some info about the line -- label, opcode, argCount, args
+	// Print the parsed line to console
+	printParsedLine(line, matchStr); // printParsedLine does NOT alter data, it is only for debug and just prints the data to console
+	// Build the rest of the instructions
 	let buildResult = buildInstruction(matchStr);
   	if (!buildResult.result) {
     	AssemblerMessage(`Unable to build instruction for ${line}: ${buildResult.message}`)
 	} 
 	else {
-		writeDataToFile(outputDirectory, `0x${buildResult.instruction.toString(16).padStart(7, "0")}` + "\n")
-
-    	AssemblerMessage(`Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16).padStart(7, "0")}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
+		// If the build was successful, print the completed line to the output file
+		instructionArray.push(`0x${(pc).toString(16).padStart(2, "0")}: 0x${buildResult.instruction.toString(16).padStart(7, "0")}`) // writeDataToFile(outputDirectory, `0x${pc.toString(16)}: 0x${buildResult.instruction.toString(16).padStart(7, "0")}\n`)
+		// ...and print the built line to the console for easier debug
+    	AssemblerMessage(`	Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16).padStart(7, "0")}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
   	}
 
 }
 
+// Write all the data to the file
+let writeBuiltInstructions = instructionArray.join("\n")
+writeDataToFile(outputDirectory, writeBuiltInstructions)
+
+
 
 // ============================================================================
-// writeDataToFile
+// handleBranchAndLabel
 //
-// Takes a given directory and some data and writes it to the file given.
+// Goes through the entire input file, looks for any branches and takes note of
+// the PC positions of those branches, then labels are printed (.label <lblname>
+// <lblPCinhex>) to the top of the file and branches are built
 //
 // Arguments--
 //
-// directory:		The location of the file to write the data to on the
-//					current machine
+// label:		the label that was found on the line (note this could just be ""
+//				so there is a check to make sure it is a valid label)
 //
-// dataToWrite:		The data to be written to the specified file
+// pcValue:		the value of the pc
 //
-// Returns--
-//
-// None
-//
-function writeDataToFile(directory, dataToWrite) {
-	var fs = require("fs");
+function printAndParseLabels(label, pcValue) {
 
-	fs.appendFile(directory, dataToWrite, (err) => {
-		if (err) {
-			throw err;
-		}
-		else {
-			AssemblerMessage("Output file at \"" + directory + "\" written")
-		}
-	});
-}
+	if (label.length > 0) {
+		AssemblerMessage(`Label \"${label}\" found on line 0x${pcValue.padStart(2, "0")}`)
+		instructionArray.push(`.label ${label} 0x${pcValue.padStart(2, "0")}`)
+	}
+
+} // end: function printAndParseLabels
 
 
 // ============================================================================
@@ -349,7 +447,6 @@ function writeDataToFile(directory, dataToWrite) {
 function buildInstruction(parsedValue) {
 	var instruction = 0;
 	var errorMessage = "";
-	var brTarget = "";
   
 	let iValEntry = instructionValidationTable[parsedValue.opcode];
 	// Get the instruction validation entry based on the opcode. If this comes
@@ -520,30 +617,3 @@ function lineParse(line) {
 		args: argSplit,
 	}
 } // end: function lineParse
-
-
-// ============================================================================
-// printParsedLine
-//
-// Print the information returned from parseLine as an example of how to use
-// the information
-//
-// Arguments--
-//
-// line:		the literal line, as passed in to the assembler (written in
-//				assembly code)
-//
-// matchStr:	parsed line to print (this is the hash returned by lineParse)
-//
-function printParsedLine(line, matchStr) {
-	if (matchStr === undefined) {
-	  	AssemblerMessage("Parse error found on line " + line);
-	  	return;
-	}
-	AssemblerMessage(`Line is \"${line}\"`);
-	AssemblerMessage(`  label: \"${matchStr.label}\", opcode: \"${matchStr.opcode}\", argCount: ${matchStr.argCount}`)
-	for (let i = 0; i < matchStr.argCount; i++) {
-	  	AssemblerMessage(`    Argument ${i}: \"${matchStr.args[i]}\"`)
-	}
-} // end: function printParsedLine
-
