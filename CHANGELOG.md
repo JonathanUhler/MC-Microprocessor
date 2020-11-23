@@ -35,3 +35,5 @@ Revision History:
 	3.3.0	11/22/2020	Chanes in this version:
 							-Added the printAndParseLabels function to handle labels
 							-Print labels at the top of the output
+
+	3.3.1	11/23/2020	Add license
