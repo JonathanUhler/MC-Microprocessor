@@ -8,7 +8,7 @@
 
 const { match } = require('assert')
 
-const AssemblerVersion = "3.3.0"
+const AssemblerVersion = "3.3.1"
 
 // Revision History
 //
@@ -45,27 +45,6 @@ const AssemblerVersion = "3.3.0"
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 
 
-// ============================================================================
-// Unix commands
-//
-// help [--cmd <command>]:		prints info about the commands or about a specific
-//								command specified with the argument
-//
-// run:							runs the program
-//
-// directory <-i/-o> [path]:	change the directory for the input or output file
-//								if the "path" argument is given or print the
-//								current directory if no "path" is given
-//
-// clear <-i/-o>:				clears one of the files specified by the "i/o" argument
-//
-// debug <on/off>:				toggles the debug messages
-//
-// timeout <value>:				updates the timeout value (how long the program can run
-//								before automatically teminating)
-// ============================================================================
-
-
 // Version information
 this.Version = AssemblerVersion
 AssemblerMessage("Assembler v" + this.Version)
@@ -91,7 +70,7 @@ function AssemblerMessage(msg, ...args) {
 
 	const AssemblerMessageEnable = true
 
-    let message = "A-MSG:	" + msg
+    let message = "MC-AMSG:	" + msg
     if (args.length > 0) {
       	message += " " + args.join(", ")
     }
@@ -165,16 +144,16 @@ function writeDataToFile(directory, dataToWrite) {
 // The current real line number of the program counter (not included commented
 // lines or blank-space lines)
 let pc = -1
+let pcLabel = -1
 // An object used to index the value of the pc using a label
-let labelHash = {}
+let labelArray = []
 // Array of all the built instructions
 let instructionArray = []
 // The locations of the input and output text files (edit from here for easy
 // access)
-const inputDirectory = '/Users/jonathan/Documents/VS Code/Assembler/input.asm'
-const outputDirectory = '/Users/jonathan/Documents/VS Code/Assembler/output.bin'
-const maxTimeoutValue = 500
-//
+let inputDirectory = '/Users/jonathan/Documents/VS Code/Assembler/input.asm'
+let outputDirectory = '/Users/jonathan/Documents/VS Code/Assembler/output.bin'
+let maxTimeoutValue = 500
 // end: GLOBAL VARIABLES
 
 
@@ -224,18 +203,6 @@ const instructionFields = {
 } // end: hash intructionFields
 
 // Instruction Validation table
-//                                     Opcode Map
-//                                    Instn<22:20>
-//                  000    001   010   011   100   101   110   111
-//                 +-----+-----+-----+-----+-----+-----+-----+-----+
-//               00| or  | and |     | not | cmp |     | add | sub |
-//                 +-----+-----+-----+-----+-----+-----+-----+-----+
-//               01| ori | andi|     | noti| cmpi|     | addi| subi|
-// Instn<23:33>    +-----+-----+-----+-----+-----+-----+-----+-----+
-//               10| brz | bro |     |     |     |     |     |     |
-//                 +-----+-----+-----+-----+-----+-----+-----+-----+
-//               11| ld  | st  |     |     |     |     | halt| mf  |
-//                 +-----+-----+-----+-----+-----+-----+-----+-----+
 const instructionValidationTable = {
 	// First row of opcode table
 	"or"  :  {opcode:  0, argCount: 3, args:["rw","ra","rb"]},
@@ -254,11 +221,11 @@ const instructionValidationTable = {
 	// Third row of opcode table
 	"brz" :  {opcode: 16, argCount: 2, args:["rb","label"]},
 	"bro" :  {opcode: 17, argCount: 2, args:["rb","label"]},
-	"mf" :   {opcode: 31, argCount: 3, args:["rw","ra","imm"]},
+	"mf" :   {opcode: 18, argCount: 3, args:["rw","ra","imm"]},
 	// Fourth row of opcode table
 	"ld" :   {opcode: 24, argCount: 3, args:["rw","ra","imm"]},
 	"st" :   {opcode: 25, argCount: 3, args:["rw","ra","imm"]},
-	"halt" : {opcode: 30, argCount: 1, args:["imm"]},
+	"halt" : {opcode: 31, argCount: 1, args:["imm"]},
 	
 	// pseudo instructions that provide more intuitive access to certain instructions
 	"nop" :  {opcode:  0, argCount: 0, args:[]},
@@ -271,7 +238,8 @@ const instructionValidationTable = {
 // replaceStringInData
 //
 // Function to search through all lines of a file for specific characters or
-// phrases (primarily used to remove lines with comments "//")
+// phrases (primarily used to remove lines with comments "//" but can be used
+// to remove any character or phrase in a line)
 //
 // Arguments--
 //
@@ -336,17 +304,15 @@ let lines = replaceStringInData(inputDirectory, /\/\/.*$/, "")
 // For each line, search for a label, and if one is found then add it to the file
 for (let i = 0; i < lines.length; i++) {
 
-	pc++
+	pcLabel++
 	let line = lines[i]
 	let matchStr = lineParse(line) // lineParse returns some info about the line -- label, opcode, argCount, args
 
-	AssemblerMessage(`Searching for labels on line \"${line}\" with pc 0x${pc.toString(16).padStart(2, "0")}`)
+	AssemblerMessage(`Searching for labels on line \"${line}\" with pc 0x${pcLabel.toString(16).padStart(2, "0")}`)
 
 	// Put the labels at the top of the output
-	printAndParseLabels(matchStr.label, pc.toString(16))
+	printAndParseLabels(matchStr.label, pcLabel.toString(16))
 }
-
-pc = -1
 
 // For each line, parse and build the 
 // This is where the actual assembly code is processed
@@ -360,8 +326,8 @@ for (let i = 0; i < lines.length; i++) { // "lines" is the array of all the line
 
 	// If the timeout limit is exceeded, break out of the loop and terminate the program
 	if (i > maxTimeoutValue) {
-		AssemblerMessage(`ERROR maxTimeoutValue exceeded! Program terminated at line ${i}. This can be changed by using the \"timeout <value>\" command (use \"help [--cmd <command>] for help\")`)
-		instructionArray.push(`// ERROR maxTimeoutValue exceeded! Program terminated at line ${i}. This can be changed by using the \"timeout <value>\" command (use \"help [--cmd <command>]\" for help)`)
+		AssemblerMessage(`Fatal error: maxTimeoutValue exceeded! Program terminated at line ${i}`)
+		instructionArray.push(`// Fatal error: maxTimeoutValue exceeded! Program terminated at line ${i}`)
 		break
 	}
 
@@ -370,11 +336,19 @@ for (let i = 0; i < lines.length; i++) { // "lines" is the array of all the line
 	let matchStr = lineParse(line) // lineParse returns some info about the line -- label, opcode, argCount, args
 	// Print the parsed line to console
 	printParsedLine(line, matchStr) // printParsedLine does NOT alter data, it is only for debug and just prints the data to console
+	// Check for valid branch targets
+	if (matchStr.opcode === "brz" || matchStr.opcode === "bro") {
+		if (labelArray.includes(matchStr.args[1]) === false) {
+			AssemblerMessage(`Fatal error: branch on line 0x${pc.toString(16).padStart(2, "0")} references an invalid target`)
+			instructionArray.push(`// Fatal error: branch on line 0x${pc.toString(16).padStart(2, "0")} references an invalid target`)
+			break
+		}
+	}
 	// Build the rest of the instructions
 	let buildResult = buildInstruction(matchStr)
   	if (!buildResult.result) {
     	AssemblerMessage(`Unable to build instruction for ${line}: ${buildResult.message}`)
-	} 
+	}
 	else {
 		// If the build was successful, print the completed line to the output file
 		instructionArray.push(`0x${(pc).toString(16).padStart(2, "0")}: 0x${buildResult.instruction.toString(16).padStart(7, "0")}`) // writeDataToFile(outputDirectory, `0x${pc.toString(16)}: 0x${buildResult.instruction.toString(16).padStart(7, "0")}\n`)
@@ -408,8 +382,9 @@ function printAndParseLabels(label, pcValue) {
 
 	if (label.length > 0) {
 		AssemblerMessage(`Label \"${label}\" found on line 0x${pcValue.padStart(2, "0")}`)
+		labelArray.push(label)
 		instructionArray.push(`.label ${label} 0x${pcValue.padStart(2, "0")}`)
-	}
+	} // end: if
 
 } // end: function printAndParseLabels
 
@@ -444,6 +419,7 @@ function printAndParseLabels(label, pcValue) {
 function buildInstruction(parsedValue) {
 	var instruction = 0
 	var errorMessage = ""
+	var brTarget
   
 	let iValEntry = instructionValidationTable[parsedValue.opcode]
 	// Get the instruction validation entry based on the opcode. If this comes
@@ -588,7 +564,7 @@ function lineParse(line) {
 		}
 		else {
 			// If that doesn't match, then something went wrong
-			AssemblerMessage("ERROR parsing opcode: " + line)
+			AssemblerMessage("Fatal error: parsing opcode: " + line)
 			return undefined
 		}
 	}
@@ -601,7 +577,7 @@ function lineParse(line) {
 		argSplit = line.split(",")
 		argCount = argSplit.length
 		if (argCount > 3) {
-			AssemblerMessage("ERROR: Too many args on line: " + line)
+			AssemblerMessage("Fatal error: Too many args on line: " + line)
 			return undefined
 		}
 	}
