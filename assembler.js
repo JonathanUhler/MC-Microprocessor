@@ -50,7 +50,7 @@ this.Version = AssemblerVersion
 AssemblerMessage("Assembler v" + this.Version)
 
 
-// ============================================================================
+// ================================================================================================
 // AssemblerMessage
 //
 // Function to emit a message, with optional arguments, which are separated
@@ -70,6 +70,7 @@ function AssemblerMessage(msg, ...args) {
 
 	const AssemblerMessageEnable = true
 
+	// Minecraft-AssemblerMessage
     let message = "MC-AMSG:	" + msg
     if (args.length > 0) {
       	message += " " + args.join(", ")
@@ -82,7 +83,7 @@ function AssemblerMessage(msg, ...args) {
 } // end: function AssemblerMessage
 
 
-// ============================================================================
+// ================================================================================================
 // printParsedLine
 //
 // Print the information returned from parseLine as an example of how to use
@@ -108,7 +109,7 @@ function printParsedLine(line, matchStr) {
 } // end: function printParsedLine
 
 
-// ============================================================================
+// ================================================================================================
 // writeDataToFile
 //
 // Takes a given directory and some data and writes it to the file given.
@@ -138,7 +139,7 @@ function writeDataToFile(directory, dataToWrite) {
 } // end: function writeDataToFile
 
 
-// ============================================================================
+// ================================================================================================
 // GLOBAL VARIABLES
 //
 // The current real line number of the program counter (not included commented
@@ -166,7 +167,7 @@ let dateTime = date + ' ' + time
 writeDataToFile(outputDirectory, "\n// assembler.js v" + AssemblerVersion + "\n" + "// " + dateTime + "\n")
 
 
-// ============================================================================
+// ================================================================================================
 // Instruction field descriptors
 //
 // Each field is indexed by the name of the field and is a hash that describes
@@ -234,7 +235,7 @@ const instructionValidationTable = {
 } // end: hash instructionValidationTable
 
 
-// ============================================================================
+// ================================================================================================
 // replaceStringInData
 //
 // Function to search through all lines of a file for specific characters or
@@ -364,7 +365,7 @@ writeDataToFile(outputDirectory, writeBuiltInstructions)
 
 
 
-// ============================================================================
+// ================================================================================================
 // handleBranchAndLabel
 //
 // Goes through the entire input file, looks for any branches and takes note of
@@ -389,7 +390,7 @@ function printAndParseLabels(label, pcValue) {
 } // end: function printAndParseLabels
 
 
-// ============================================================================
+// ================================================================================================
 // buildInstruction
 //
 // Take the results of lineParse and build an instruction from the text.
@@ -508,7 +509,7 @@ function buildInstruction(parsedValue) {
 } // end: function buildInstruction
 
 
-// ============================================================================
+// ================================================================================================
 // lineParse
 //
 // Parse a line into its constituent parts. Assumes that any comments have

@@ -9,7 +9,7 @@ const commandsVersion = "0.0.0"
 // -------  ----------  -------------------------------------------------------
 // 
 
-// +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+// +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 // MIT License
 //
 // Copyright (c) 2020 Jonathan Uhler and Mike Uhler
@@ -31,18 +31,16 @@ const commandsVersion = "0.0.0"
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-// +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+// +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 
-// ============================================================================
+// ================================================================================================
 // terminal commands
 //
-// help [--verbose]:			prints info about the commands
+// help {-al|--run|--directory|--clear|--debug|--timeout}:    prints info about the commands
 //
 // run:							runs the program
 //
-// directory {-i|-o} [path]:	change the directory for the input or output file
-//								if the "path" argument is given or print the
-//								current directory if no "path" is given
+// directory {-i|-o} {path}:	change the directory for the input or output file
 //
 // clear {-i|-o}:				clears one of the files specified by the "i/o" argument
 //
@@ -52,49 +50,26 @@ const commandsVersion = "0.0.0"
 //								before automatically teminating)
 //
 // end: terminal commands
-// ============================================================================
+// ================================================================================================
 
 
 // Version information
 this.Version = commandsVersion
 CommandsMessage("Commands v" + this.Version)
 
-const commandTypeEnum = {
-    help        :   "help",
-    run         :   "run",
-    directory   :   "directory",
-    clear       :   "clear",
-    debug       :   "debug",
-    timeout     :   "timeout",
+
+const validCommandsTable = {
+    "help"      :   {regEx: /^$/, numArgs: 1, helpString: "help {--all|--run|--directory|--clear|--debug|--timeout}"},
+    "run"       :   {regEx: , numArgs: 0, helpString: "run"},
+    "directory" :   {regEx: , numArgs: 2, helpString: "directory {-i|-o} {path}"},
+    "clear"     :   {regEx: , numArgs: 1, helpString: "clear {-i|-o}"},
+    "debug"     :   {regEx: , numArgs: 1, helpString: "debug {--on|--off}"},
+    "timeout"   :   {regEx: , numArgs: 1, helpString: "timeout {value}"},
 }
 
-const commandDefinition = {
-    pattern     :   String,
-    type        :   commandTypeEnum,
-    numArgs     :   Number,
-    helpString  :   String,
-}
 
-const validCommands = [
-    commandDefinition = {
-        pattern     :   "help",
-        type        :   commandTypeEnum.help,
-        numArgs     :   0,
-        helpString  :   "help",
-    },
-    commandDefinition = {
-        pattern     :   "run",
-        type        :   commandTypeEnum.run,
-        numArgs     :   0,
-        helpString  :   "run",
-    },
-]
-
-CommandsMessage(validCommands)
-
-
-// ============================================================================
-// CommandsMessage
+// ================================================================================================
+// fuction CommandsMessage
 //
 // Function to emit a message, with optional arguments, which are separated
 // by ", "
@@ -113,6 +88,7 @@ function CommandsMessage(msg, ...args) {
 
 	const CommandsMessageEnable = true
 
+    // Minecraft-CommandsMessage
     let message = "MC-CMSG:	" + msg
     if (args.length > 0) {
       	message += " " + args.join(", ")
@@ -132,10 +108,77 @@ const readline = require('readline').createInterface({
 	output: process.stdout
 })
 
-// Prompt the user with "MCA %" and get a command from them
+// Prompt the user with "MCA %" (MinecraftAssembler % ) and get a command from them
 readline.question(`MCA % `, (cmd) => {
 
-    
+    let cmdMsg = executeCommand(cmd)
+    CommandsMessage(cmdMsg)
 
 	readline.close()
 })
+
+
+// ================================================================================================
+// function executeCommand
+//
+// A function that parses and executes commands given by the user
+//
+// Arguments--
+//
+// command:     the user-inputted command
+//
+// Returns--
+//
+// None
+//
+function executeCommand(command) {
+
+    // // Declare the regular expression for a command
+    // let cmdRegEx = /^(\w+)\s(.+)$/ // Matches any set of characters followed by a whitespace character and other sets of characters
+    // let components = []
+    // // Make sure the command matches the regular expression then split the command into its components
+    // if (cmdRegEx.test(command)) {
+    //     components = command.split(" ")
+    // }
+    // else {
+    //     return("Fatal error: Invalid command syntax")
+    // }
+    
+    // let cmd = components[0] // Get the command type out of the components list
+    // let args = []
+
+    // for (let i = 1; i < components.length; i++) {
+    //     args.push(components[i]) // Get all the arguments for the command out of the components list
+    // }
+
+    switch (cmd) {
+        case "help":
+            CommandsMessage("help")
+            break
+        
+        case "run":
+            CommandsMessage("run")
+            break
+        
+        case "directory":
+            CommandsMessage("directory")
+            break
+            
+        case "clear":
+            CommandsMessage("clear")
+            break
+    
+        case "debug":
+            CommandsMessage("debug")
+            break
+
+        case "timeout":
+            CommandsMessage("timeout")
+            break
+
+        default:
+            CommandsMessage("Fatal error: Invalid syntax")
+            break
+    }
+
+} // end: function executeCommand
