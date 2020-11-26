@@ -36,7 +36,7 @@ const commandsVersion = "0.0.0"
 // ================================================================================================
 // terminal commands
 //
-// help {-al|--run|--directory|--clear|--debug|--timeout}:    prints info about the commands
+// help {--all|--run|--directory|--clear|--debug|--timeout}:    prints info about the commands
 //
 // run:							runs the program
 //
@@ -44,10 +44,12 @@ const commandsVersion = "0.0.0"
 //
 // clear {-i|-o}:				clears one of the files specified by the "i/o" argument
 //
-// debug {on|off}:				toggles the debug messages
+// debug {--on|--off}:				toggles the debug messages
 //
 // timeout {value}:				updates the timeout value (how long the program can run
 //								before automatically teminating)
+//
+// quit:                        terminate the program
 //
 // end: terminal commands
 // ================================================================================================
@@ -57,15 +59,21 @@ const commandsVersion = "0.0.0"
 this.Version = commandsVersion
 CommandsMessage("Commands v" + this.Version)
 
+// Import data from assembler.js
+var importedData = require('./assembler.js')
+
 
 const validCommandsTable = {
-    "help"      :   {regEx: /^$/, numArgs: 1, helpString: "help {--all|--run|--directory|--clear|--debug|--timeout}"},
-    "run"       :   {regEx: , numArgs: 0, helpString: "run"},
-    "directory" :   {regEx: , numArgs: 2, helpString: "directory {-i|-o} {path}"},
-    "clear"     :   {regEx: , numArgs: 1, helpString: "clear {-i|-o}"},
-    "debug"     :   {regEx: , numArgs: 1, helpString: "debug {--on|--off}"},
-    "timeout"   :   {regEx: , numArgs: 1, helpString: "timeout {value}"},
+    "help"      :   {numArgs: 1, helpString: "help {--all|--run|--directory|--clear|--debug|--timeout}"},
+    "run"       :   {numArgs: 0, helpString: "run"},
+    "directory" :   {numArgs: 2, helpString: "directory {-i|-o} {path}"},
+    "clear"     :   {numArgs: 1, helpString: "clear {-i|-o}"},
+    "debug"     :   {numArgs: 1, helpString: "debug {--on|--off}"},
+    "timeout"   :   {numArgs: 1, helpString: "timeout {value}"},
+    "quit"      :   {numArgs: 0, helpString: "quit"}
 }
+
+var exitCode = 0
 
 
 // ================================================================================================
@@ -89,7 +97,7 @@ function CommandsMessage(msg, ...args) {
 	const CommandsMessageEnable = true
 
     // Minecraft-CommandsMessage
-    let message = "MC-CMSG:	" + msg
+    var message = msg
     if (args.length > 0) {
       	message += " " + args.join(", ")
     }
@@ -101,20 +109,44 @@ function CommandsMessage(msg, ...args) {
 } // end: function CommandsMessage
 
 
-
-// Read the users input
-const readline = require('readline').createInterface({
-	input: process.stdin,
-	output: process.stdout
-})
-
 // Prompt the user with "MCA %" (MinecraftAssembler % ) and get a command from them
-readline.question(`MCA % `, (cmd) => {
 
-    let cmdMsg = executeCommand(cmd)
-    CommandsMessage(cmdMsg)
+// Exit codes:
+//
+// 0:       success
+// 126:     invoked command cannot execute
+// 127:     invoked command does not exist
+// 128:     invoked command had invalid arguments
+// 130:     script terminated with "quit" or ctrl + d
 
-	readline.close()
+const readline = require('readline');
+const rl = readline.createInterface({ // Setup the input and output streams and the user prompt
+  input: process.stdin,
+  output: process.stdout,
+  prompt: 'MCA % '
+});
+
+// Prompt the user for input
+rl.prompt();
+
+// Process input when a new line is given to console
+rl.on('line', (cmd) => {
+
+    exitCode = executeCommand(cmd)
+    CommandsMessage(`exit code: ${exitCode}`)
+    if (exitCode != 0 && exitCode != 130) {
+        printHelp()
+    }
+
+    if (exitCode == 130) {
+        process.exit(130)
+    }
+
+    // Prompt the user again
+    rl.prompt();
+}).on('close', () => {
+    console.log('Have a great day!');
+    process.exit(0);
 })
 
 
@@ -133,52 +165,86 @@ readline.question(`MCA % `, (cmd) => {
 //
 function executeCommand(command) {
 
-    // // Declare the regular expression for a command
-    // let cmdRegEx = /^(\w+)\s(.+)$/ // Matches any set of characters followed by a whitespace character and other sets of characters
-    // let components = []
-    // // Make sure the command matches the regular expression then split the command into its components
-    // if (cmdRegEx.test(command)) {
-    //     components = command.split(" ")
-    // }
-    // else {
-    //     return("Fatal error: Invalid command syntax")
-    // }
-    
-    // let cmd = components[0] // Get the command type out of the components list
-    // let args = []
+    // Split the individual components of the command
+    var components = []
+    components = command.split(" ")
 
-    // for (let i = 1; i < components.length; i++) {
-    //     args.push(components[i]) // Get all the arguments for the command out of the components list
-    // }
+    var cmd = components[0] // Get the command type out of the components list
+    var args = []
+    for (var i = 1; i < components.length; i++) {
+        args.push(components[i]) // Get all the arguments for the command out of the components list
+    } // end: for
 
+    // Make sure the command is valid
+    if (validCommandsTable[cmd] === undefined) { // Check to make sure the command exists
+        return(127)
+    } // end: if
+
+    if (args.length != validCommandsTable[cmd].numArgs) { // Check for the correct number of arguments
+        return(128)
+    } // end: if
+
+    // Execute the command if it is valid
     switch (cmd) {
+
         case "help":
-            CommandsMessage("help")
-            break
+            return(0)
         
-        case "run":
-            CommandsMessage("run")
-            break
-        
-        case "directory":
-            CommandsMessage("directory")
-            break
+        case "directory": // update the input or output file path
+
+            if (args[0].toString() === "-i") {
+                var updateDirI = importedData.setterGetter("input", args[1].toString())
+            }
+            else if (args[0].toString() === "-o") {
+                var updateDirO = importedData.setterGetter("output", args[1].toString())
+            }
+            else {
+                return(128)
+            }
+
+            return(0)
             
         case "clear":
-            CommandsMessage("clear")
-            break
+            return(0)
     
         case "debug":
-            CommandsMessage("debug")
-            break
+            if (args[0].toString() === "--on") {
+                var updateDebug = importedData.setterGetter("debug", true)
+            }
+            else if (args[0].toString() === "--off") {
+                var updateDebug = importedData.setterGetter("debug", false)
+            }
+            else {
+                return(128)
+            }
 
-        case "timeout":
-            CommandsMessage("timeout")
-            break
+            return(0)
 
-        default:
-            CommandsMessage("Fatal error: Invalid syntax")
-            break
+        case "timeout": // update the max number of lines that can be executed
+
+            var updateTimeout = importedData.setterGetter("timeout", parseInt(args[0]))
+            return(0)
+
+        case "run": // run the assembler
+            var runAssembler = importedData.init()
+            return(0)
+
+        case "quit": // quit the process
+            return(130)
     }
 
 } // end: function executeCommand
+
+
+function printHelp() {
+
+    CommandsMessage("Valid commands are:")
+
+    // Print all the valid commands
+    for (var i in validCommandsTable) {
+        
+        CommandsMessage("    " + validCommandsTable[i].helpString)
+
+    } // end: for
+
+}

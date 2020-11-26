@@ -13,12 +13,20 @@ const AssemblerVersion = "3.3.1"
 // Revision History
 //
 //  version    date                     Change
-// -------  ----------  -------------------------------------------------------
+// -------  ----------  ---------------------------------------------------------------------------
 // 3.3.0	11/22/2020	Chanes in this version:
 //							-Added the printAndParseLabels function to handle labels
 //							-Print labels at the top of the output
 //
 // 3.3.1	11/23/2020	Add license
+//
+// 4.0.0	11/24/2020	Changes in this version:
+//							-Replace "let" with "var"
+//							-Create the "init" function and move some variable declaractions into it
+//								-This function runs the entire assembler program
+//							-Create the "setterGetter" function to handle variables
+//							-Export some important data to be used in the command.js file
+//							-Add commands.js file to handle user commands
 
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 // MIT License
@@ -49,6 +57,8 @@ const AssemblerVersion = "3.3.1"
 this.Version = AssemblerVersion
 AssemblerMessage("Assembler v" + this.Version)
 
+// Toggle the debug messages
+const AssemblerMessageEnable = false
 
 // ================================================================================================
 // AssemblerMessage
@@ -68,10 +78,8 @@ AssemblerMessage("Assembler v" + this.Version)
 //
 function AssemblerMessage(msg, ...args) {
 
-	const AssemblerMessageEnable = true
-
 	// Minecraft-AssemblerMessage
-    let message = "MC-AMSG:	" + msg
+    var message = "MC-AMSG:	" + msg
     if (args.length > 0) {
       	message += " " + args.join(", ")
     }
@@ -103,7 +111,7 @@ function printParsedLine(line, matchStr) {
 	}
 	AssemblerMessage(`	Parsed line is \"${line}\"`)
 	AssemblerMessage(`	label: \"${matchStr.label}\", opcode: \"${matchStr.opcode}\", argCount: ${matchStr.argCount}`)
-	for (let i = 0; i < matchStr.argCount; i++) {
+	for (var i = 0; i < matchStr.argCount; i++) {
 	  	AssemblerMessage(`		Argument ${i}: \"${matchStr.args[i]}\"`)
 	}
 } // end: function printParsedLine
@@ -144,27 +152,14 @@ function writeDataToFile(directory, dataToWrite) {
 //
 // The current real line number of the program counter (not included commented
 // lines or blank-space lines)
-let pc = -1
-let pcLabel = -1
+var pc = -1
+var pcLabel = -1
 // An object used to index the value of the pc using a label
-let labelArray = []
+var labelArray = []
 // Array of all the built instructions
-let instructionArray = []
-// The locations of the input and output text files (edit from here for easy
-// access)
-let inputDirectory = '/Users/jonathan/Documents/VS Code/Assembler/input.asm'
-let outputDirectory = '/Users/jonathan/Documents/VS Code/Assembler/output.bin'
-let maxTimeoutValue = 500
+var instructionArray = []
+//
 // end: GLOBAL VARIABLES
-
-
-// Set up timestamp information to print to the output file as a comment
-let today = new Date()
-let date = (today.getMonth() + 1) + '-' + (today.getDate()) + '-' + today.getFullYear()
-let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
-let dateTime = date + ' ' + time
-
-writeDataToFile(outputDirectory, "\n// assembler.js v" + AssemblerVersion + "\n" + "// " + dateTime + "\n")
 
 
 // ================================================================================================
@@ -260,24 +255,24 @@ function replaceStringInData(directory, search, replace) {
 
 	const fs = require('fs')
 
-	let searchContent = search
-	let replaceContent = replace
+	var searchContent = search
+	var replaceContent = replace
 
 
-	let data = fs.readFileSync(directory)
+	var data = fs.readFileSync(directory)
 
-	let fileData = data.toString() // Save the file data as a string
-	let fileLinesArray = fileData.split("\n") // Split the file into individual lines as an array
+	var fileData = data.toString() // Save the file data as a string
+	var fileLinesArray = fileData.split("\n") // Split the file into individual lines as an array
 	AssemblerMessage("File lines:", fileLinesArray)
 
-	let returnData = [] // Declare the returnData array to be used later
+	var returnData = [] // Declare the returnData array to be used later
 
-	for (let i = 0; i < fileLinesArray.length; i++) { // Repeat for every line of the file
+	for (var i = 0; i < fileLinesArray.length; i++) { // Repeat for every line of the file
 
 		// Save each individual line to the temporary fileLine variable
 		// then replace the desired character(s) and trim any white space
 		// from the start and end of the line
-		let fileLine = fileLinesArray[i].replace(searchContent, replaceContent)
+		var fileLine = fileLinesArray[i].replace(searchContent, replaceContent)
 		fileLine = fileLine.trim()
 		fileLine = fileLine.toLowerCase()
 
@@ -298,71 +293,134 @@ function replaceStringInData(directory, search, replace) {
 
 
 
-// Take the edited lines from replaceStringInData and compile them
-let lines = replaceStringInData(inputDirectory, /\/\/.*$/, "")
+// The locations of the input and output text files (edit from here for easy
+// access)
+var inputDirectory
+var outputDirectory
+var maxTimeoutValue = 500
 
 
-// For each line, search for a label, and if one is found then add it to the file
-for (let i = 0; i < lines.length; i++) {
+function setterGetter(dataToChange, newValue) {
 
-	pcLabel++
-	let line = lines[i]
-	let matchStr = lineParse(line) // lineParse returns some info about the line -- label, opcode, argCount, args
+	switch (dataToChange) {
+		case "input":
+			inputDirectory = newValue
+			AssemblerMessage(`New inputDirectory value is ${inputDirectory}`)
+			break
+		
+		case "output":
+			outputDirectory = newValue
+			AssemblerMessage(`New outputDirectory value is ${outputDirectory}`)
+			break
 
-	AssemblerMessage(`Searching for labels on line \"${line}\" with pc 0x${pcLabel.toString(16).padStart(2, "0")}`)
+		case "timeout":
+			maxTimeoutValue = newValue
+			AssemblerMessage(`New maxTimeoutValue value is ${maxTimeoutValue}`)
+			break
 
-	// Put the labels at the top of the output
-	printAndParseLabels(matchStr.label, pcLabel.toString(16))
-}
+		case "debug":
+			AssemblerMessageEnable = newValue
+			AssemblerMessage(`New AssemblerMessageEnable value is ${AssemblerMessageEnable}`)
+			break
 
-// For each line, parse and build the 
-// This is where the actual assembly code is processed
-for (let i = 0; i < lines.length; i++) { // "lines" is the array of all the lines from the input file
-
-	pc++
-
-	// Display and use the contents and length of each line
-	// Message should look like this 'Line: x has length: y, and states: "z"'
-	AssemblerMessage("Line: " + i, "has length " + lines[i].length, "and states \"" + lines[i] + "\"")
-
-	// If the timeout limit is exceeded, break out of the loop and terminate the program
-	if (i > maxTimeoutValue) {
-		AssemblerMessage(`Fatal error: maxTimeoutValue exceeded! Program terminated at line ${i}`)
-		instructionArray.push(`// Fatal error: maxTimeoutValue exceeded! Program terminated at line ${i}`)
-		break
+		default:
+			AssemblerMessage("Unspecified call to setterGetter(). Must be given a data type to change")
+			break
 	}
 
-	// For each line of the assembly code, parse and print it
-	let line = lines[i] // "line" is the placeholder for the single line currently being processed
-	let matchStr = lineParse(line) // lineParse returns some info about the line -- label, opcode, argCount, args
-	// Print the parsed line to console
-	printParsedLine(line, matchStr) // printParsedLine does NOT alter data, it is only for debug and just prints the data to console
-	// Check for valid branch targets
-	if (matchStr.opcode === "brz" || matchStr.opcode === "bro") {
-		if (labelArray.includes(matchStr.args[1]) === false) {
-			AssemblerMessage(`Fatal error: branch on line 0x${pc.toString(16).padStart(2, "0")} references an invalid target`)
-			instructionArray.push(`// Fatal error: branch on line 0x${pc.toString(16).padStart(2, "0")} references an invalid target`)
+}
+
+
+// ================================================================================================
+// function init
+//
+// The primary function for the assembler that runs the assembly program. When this function is called
+// the assembler will start
+//
+// Arguments--
+//
+// None
+//
+// Returns--
+//
+// None
+//
+function init() {
+
+	// Set up timestamp information to print to the output file as a comment
+	var today = new Date()
+	var date = (today.getMonth() + 1) + '-' + (today.getDate()) + '-' + today.getFullYear()
+	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
+	var dateTime = date + ' ' + time
+
+	writeDataToFile(outputDirectory, "\n// assembler.js v" + AssemblerVersion + "\n" + "// " + dateTime + "\n")
+
+	// Take the edited lines from replaceStringInData and compile them
+	var lines = replaceStringInData(inputDirectory, /\/\/.*$/, "")
+
+
+	// For each line, search for a label, and if one is found then add it to the file
+	for (var i = 0; i < lines.length; i++) {
+
+		pcLabel++
+		var line = lines[i]
+		var matchStr = lineParse(line) // lineParse returns some info about the line -- label, opcode, argCount, args
+
+		AssemblerMessage(`Searching for labels on line \"${line}\" with pc 0x${pcLabel.toString(16).padStart(2, "0")}`)
+
+		// Put the labels at the top of the output
+		printAndParseLabels(matchStr.label, pcLabel.toString(16))
+	}
+
+	// For each line, parse and build the 
+	// This is where the actual assembly code is processed
+	for (var i = 0; i < lines.length; i++) { // "lines" is the array of all the lines from the input file
+
+		pc++
+
+		// Display and use the contents and length of each line
+		// Message should look like this 'Line: x has length: y, and states: "z"'
+		AssemblerMessage("Line: " + i, "has length " + lines[i].length, "and states \"" + lines[i] + "\"")
+
+		// If the timeout limit is exceeded, break out of the loop and terminate the program
+		if (i > maxTimeoutValue) {
+			AssemblerMessage(`Fatal error: maxTimeoutValue exceeded! Program terminated at line ${i}`)
+			instructionArray.push(`// Fatal error: maxTimeoutValue exceeded! Program terminated at line ${i}`)
 			break
 		}
-	}
-	// Build the rest of the instructions
-	let buildResult = buildInstruction(matchStr)
-  	if (!buildResult.result) {
-    	AssemblerMessage(`Unable to build instruction for ${line}: ${buildResult.message}`)
-	}
-	else {
-		// If the build was successful, print the completed line to the output file
-		instructionArray.push(`0x${(pc).toString(16).padStart(2, "0")}: 0x${buildResult.instruction.toString(16).padStart(7, "0")}`) // writeDataToFile(outputDirectory, `0x${pc.toString(16)}: 0x${buildResult.instruction.toString(16).padStart(7, "0")}\n`)
-		// ...and print the built line to the console for easier debug
-    	AssemblerMessage(`	Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16).padStart(7, "0")}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
-  	}
 
-}
+		// For each line of the assembly code, parse and print it
+		var line = lines[i] // "line" is the placeholder for the single line currently being processed
+		var matchStr = lineParse(line) // lineParse returns some info about the line -- label, opcode, argCount, args
+		// Print the parsed line to console
+		printParsedLine(line, matchStr) // printParsedLine does NOT alter data, it is only for debug and just prints the data to console
+		// Check for valid branch targets
+		if (matchStr.opcode === "brz" || matchStr.opcode === "bro") {
+			if (labelArray.includes(matchStr.args[1]) === false) {
+				AssemblerMessage(`Fatal error: branch on line 0x${pc.toString(16).padStart(2, "0")} references an invalid target`)
+				instructionArray.push(`// Fatal error: branch on line 0x${pc.toString(16).padStart(2, "0")} references an invalid target`)
+				break
+			}
+		}
+		// Build the rest of the instructions
+		var buildResult = buildInstruction(matchStr)
+		if (!buildResult.result) {
+			AssemblerMessage(`Unable to build instruction for ${line}: ${buildResult.message}`)
+		}
+		else {
+			// If the build was successful, print the completed line to the output file
+			instructionArray.push(`0x${(pc).toString(16).padStart(2, "0")}: 0x${buildResult.instruction.toString(16).padStart(7, "0")}`) // writeDataToFile(outputDirectory, `0x${pc.toString(16)}: 0x${buildResult.instruction.toString(16).padStart(7, "0")}\n`)
+			// ...and print the built line to the console for easier debug
+			AssemblerMessage(`	Assembled instruction for ${line} was 0x${buildResult.instruction.toString(16).padStart(7, "0")}, with branch target \"${buildResult.brTarget}\"; immediate was hex: ${buildResult.immWasHex}`)
+		}
 
-// Write all the data to the file
-let writeBuiltInstructions = instructionArray.join("\n")
-writeDataToFile(outputDirectory, writeBuiltInstructions)
+	} // end: for
 
+	// Write all the data to the file
+	var writeBuiltInstructions = instructionArray.join("\n")
+	writeDataToFile(outputDirectory, writeBuiltInstructions)
+
+} // end: function init
 
 
 // ================================================================================================
@@ -422,7 +480,7 @@ function buildInstruction(parsedValue) {
 	var errorMessage = ""
 	var brTarget
   
-	let iValEntry = instructionValidationTable[parsedValue.opcode]
+	var iValEntry = instructionValidationTable[parsedValue.opcode]
 	// Get the instruction validation entry based on the opcode. If this comes
 	// back undefined, then it was an invalid instruction
 	if (iValEntry === undefined) {
@@ -439,18 +497,18 @@ function buildInstruction(parsedValue) {
 		return { result: false, instruction: 0, brTarget: "", immWasHex: false, message: errorMessage }
 	}
   
-	let immWasHex = false
-	let fieldArgs = iValEntry.args
-	for (let i = 0; i < iValEntry.argCount; i++) {
+	var immWasHex = false
+	var fieldArgs = iValEntry.args
+	for (var i = 0; i < iValEntry.argCount; i++) {
   
 		// argType is the argument type for this argument from instructionValidationTable[opcode].args[i]
-		let argType = fieldArgs[i]
+		var argType = fieldArgs[i]
 	
 		// iField is the expected argument field
-		let iField = instructionFields[argType]
+		var iField = instructionFields[argType]
 	
 		// argSupplied is the text of the argument
-		let argSupplied = parsedValue.args[i]
+		var argSupplied = parsedValue.args[i]
 	
 		// Use the pattern for this argument type to parse the text value
 		var argMatch = argSupplied.match(iField.pattern)
@@ -491,7 +549,7 @@ function buildInstruction(parsedValue) {
 				errorMessage = parsedValue.opcode + " argument " + String(i+1) + " had an invalid immediate value: " + argSupplied
 				return { result: false, instruction: 0, brTarget: "", immWasHex: false, message: errorMessage }
 			}
-			// Jam the value back into argMatch[i] and let the code below handle combining it
+			// Jam the value back into argMatch[i] and var the code below handle combining it
 			argMatch[1] = immValue
 		}
 	
@@ -499,7 +557,7 @@ function buildInstruction(parsedValue) {
 		// right position in the instruction, and OR it in.
 		instruction |= (argMatch[1] & iField.mask) << iField.startsAt
   
-	} // end: for (let i = 0; i < iValEntry.argCount; i++)
+	} // end: for (var i = 0; i < iValEntry.argCount; i++)
   
 	return { result: true, instruction: instruction, immWasHex: immWasHex, brTarget: "", message: "" }
   
@@ -535,7 +593,7 @@ function buildInstruction(parsedValue) {
 // args:      	Array (0..argCount-1) with the argument values
 //
 function lineParse(line) {
-	let label, opcode, match
+	var label, opcode, match
 	// Trim any leading and trailing whitespace
 	line.trim()
 
@@ -572,8 +630,8 @@ function lineParse(line) {
 
 	// Check for and extract the args
 	line = line.replace(/\s+/g, "")
-	let argCount = 0
-	let argSplit = []
+	var argCount = 0
+	var argSplit = []
 	if (line.length != 0) {
 		argSplit = line.split(",")
 		argCount = argSplit.length
@@ -591,3 +649,9 @@ function lineParse(line) {
 		args: argSplit,
 	}
 } // end: function lineParse
+
+
+
+// For running on node.js, export the init function and the variables that can
+// be effected by the terminal commands
+module.exports = { setterGetter, init }
