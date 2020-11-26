@@ -8,7 +8,7 @@
 
 const { match } = require('assert')
 
-const AssemblerVersion = "3.3.1"
+const AssemblerVersion = "4.1.0"
 
 // Revision History
 //
@@ -27,6 +27,12 @@ const AssemblerVersion = "3.3.1"
 //							-Create the "setterGetter" function to handle variables
 //							-Export some important data to be used in the command.js file
 //							-Add commands.js file to handle user commands
+//
+// 4.1.0	11/25/2020	Changes in this version:
+//							-Save and load basic user config data
+//							-Implement more commands
+//							-Add config.json to handle config data
+//							-Minor bug fixes
 
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 // MIT License
@@ -58,7 +64,7 @@ this.Version = AssemblerVersion
 AssemblerMessage("Assembler v" + this.Version)
 
 // Toggle the debug messages
-const AssemblerMessageEnable = false
+var AssemblerMessageEnable
 
 // ================================================================================================
 // AssemblerMessage
@@ -295,11 +301,37 @@ function replaceStringInData(directory, search, replace) {
 
 // The locations of the input and output text files (edit from here for easy
 // access)
-var inputDirectory
-var outputDirectory
+var fs = require('fs');
+var savedData = fs.readFileSync('./config.json'), readSavedData
+
+try {
+	readSavedData = JSON.parse(savedData);
+}
+catch (err) {
+  	AssemblerMessage(`Parsing config data failed: ${err}`)
+}
+
+var inputDirectory = readSavedData[0]
+var outputDirectory = readSavedData[1]
+AssemblerMessageEnable = readSavedData[2]
 var maxTimeoutValue = 500
 
 
+// ================================================================================================
+// function setterGetter
+//
+// A function to read and write data and variables in coordination with the command interpreter
+//
+// Arguments--
+//
+// dataToChange:	the type of data to change, this could be the input directory, timeout val, etc
+//
+// newValue:		the value which the data should be changed to
+//
+// Returns--
+//
+// None
+//
 function setterGetter(dataToChange, newValue) {
 
 	switch (dataToChange) {
@@ -327,6 +359,20 @@ function setterGetter(dataToChange, newValue) {
 			AssemblerMessage("Unspecified call to setterGetter(). Must be given a data type to change")
 			break
 	}
+
+	// Save config data
+	var fs = require('fs');
+	var dataToSave = [inputDirectory, outputDirectory, AssemblerMessageEnable]
+	var configData = JSON.stringify(dataToSave);
+
+	// Write the new config data to the config.json file
+	fs.writeFile('./config.json', configData, function (err) {
+		if (err) {
+			AssemblerMessage(`Saving config data failed: ${err.message}`)
+			return;
+		}
+		AssemblerMessage("New config data saved")
+	});
 
 }
 

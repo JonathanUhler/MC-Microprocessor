@@ -37,3 +37,17 @@ Revision History:
 							-Print labels at the top of the output
 
 	3.3.1	11/23/2020	Add license
+	
+	4.0.0	11/24/2020	Changes in this version:
+							-Replace "let" with "var"
+							-Create the "init" function and move some variable declaractions into it
+								-This function runs the entire assembler program
+							-Create the "setterGetter" function to handle variables
+							-Export some important data to be used in the command.js file
+							-Add commands.js file to handle user commands
+
+	4.1.0	11/25/2020	Changes in this version:
+							-Save and load basic user config data
+							-Implement more commands
+							-Add config.json to handle config data
+							-Minor bug fixes

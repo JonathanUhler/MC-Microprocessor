@@ -1,13 +1,6 @@
-// commands.js
+// asm.js
 //
 // A simple command-line command interface for assembler.js
-
-const commandsVersion = "0.0.0"
-// Revision History
-//
-//  version    date                     Change
-// -------  ----------  -------------------------------------------------------
-// 
 
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 // MIT License
@@ -54,10 +47,6 @@ const commandsVersion = "0.0.0"
 // end: terminal commands
 // ================================================================================================
 
-
-// Version information
-this.Version = commandsVersion
-CommandsMessage("Commands v" + this.Version)
 
 // Import data from assembler.js
 var importedData = require('./assembler.js')
@@ -138,15 +127,16 @@ rl.on('line', (cmd) => {
         printHelp()
     }
 
-    if (exitCode == 130) {
+    if (exitCode == 130) { // If the user quits the program
         process.exit(130)
     }
 
     // Prompt the user again
     rl.prompt();
-}).on('close', () => {
-    console.log('Have a great day!');
-    process.exit(0);
+}).on('close', () => { // If the user uses ctrl + d
+    exitCode = 130
+    CommandsMessage(`\nexit code: ${exitCode}`)
+    process.exit(130);
 })
 
 
@@ -187,8 +177,22 @@ function executeCommand(command) {
     // Execute the command if it is valid
     switch (cmd) {
 
-        case "help":
-            return(0)
+        case "help": // Print help information
+            if (args[0].toString() === "--all") {
+                printHelp()
+                return(0)
+            }
+            else {
+                var helpArgument = args[0].replace("--","") // Remove the "--" infront of the argument
+
+                if (Object.keys(validCommandsTable).includes(helpArgument)) {
+                    CommandsMessage("    " + validCommandsTable[helpArgument.toString()].helpString) // Print the helpString for the help command
+                    return(0)
+                }
+                else {
+                    return(128)
+                }
+            }
         
         case "directory": // update the input or output file path
 
