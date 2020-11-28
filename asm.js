@@ -53,13 +53,13 @@ var importedData = require('./assembler.js')
 
 
 const validCommandsTable = {
-    "help"      :   {numArgs: 1, helpString: "help {--all|--run|--directory|--clear|--debug|--timeout}"},
-    "run"       :   {numArgs: 0, helpString: "run"},
-    "directory" :   {numArgs: 2, helpString: "directory {-i|-o} {path}"},
-    "clear"     :   {numArgs: 1, helpString: "clear {-i|-o}"},
-    "debug"     :   {numArgs: 1, helpString: "debug {--on|--off}"},
-    "timeout"   :   {numArgs: 1, helpString: "timeout {value}"},
-    "quit"      :   {numArgs: 0, helpString: "quit"}
+    "help"      :   {numArgs: 1, helpString: "help {--all|--run|--directory|--clear|--debug|--timeout}", verbose: "Display the help message(s) coordesponding to the command given in the argument"},
+    "run"       :   {numArgs: 0, helpString: "run", verbose: "Run the simulator based on the input in the specified input file. This command takes no arguments"},
+    "directory" :   {numArgs: 2, helpString: "directory {-i|-o} {path}", verbose: "Change the path to the input or output file. The first argument specifies which file is being changed and the second argument specifies the new path (use ./ to reference a file in the current directory)"},
+    "clear"     :   {numArgs: 1, helpString: "clear {-i|-o}", verbose: "Clears the contents of either the input or output file, determined by the argument"},
+    "debug"     :   {numArgs: 1, helpString: "debug {--on|--off}", verbose: "Enables or disabled the debug messages for the assembler, determined by the argument"},
+    "timeout"   :   {numArgs: 1, helpString: "timeout {value}", verbose: "Sets the timeout value which determines the maximus amount of lines of assembly code that will be executed before the process is terminated"},
+    "quit"      :   {numArgs: 0, helpString: "quit", verbose: "Quits the assembler command interface. This can also be accomplished by use ctrl + d"}
 }
 
 var exitCode = 0
@@ -68,8 +68,7 @@ var exitCode = 0
 // ================================================================================================
 // fuction CommandsMessage
 //
-// Function to emit a message, with optional arguments, which are separated
-// by ", "
+// Function to emit a message, with optional arguments, which are seperated by ", "
 //
 // Arguments--
 //
@@ -108,11 +107,16 @@ function CommandsMessage(msg, ...args) {
 // 128:     invoked command had invalid arguments
 // 130:     script terminated with "quit" or ctrl + d
 
+// Get the current folder
+var pathToFile = __dirname.split("/")
+var lastFileValue = pathToFile.length
+var currentFolderName = pathToFile[lastFileValue - 1]
+
 const readline = require('readline');
 const rl = readline.createInterface({ // Setup the input and output streams and the user prompt
   input: process.stdin,
   output: process.stdout,
-  prompt: 'MCA % '
+  prompt: currentFolderName + ' MCA % '
 });
 
 // Prompt the user for input
@@ -187,6 +191,7 @@ function executeCommand(command) {
 
                 if (Object.keys(validCommandsTable).includes(helpArgument)) {
                     CommandsMessage("    " + validCommandsTable[helpArgument.toString()].helpString) // Print the helpString for the help command
+                    CommandsMessage("    " + validCommandsTable[helpArgument.toString()].verbose) // Print the extra description
                     return(0)
                 }
                 else {
@@ -211,7 +216,7 @@ function executeCommand(command) {
         case "clear":
             return(0)
     
-        case "debug":
+        case "debug": // Toggle the MC-AMSG messages
             if (args[0].toString() === "--on") {
                 var updateDebug = importedData.setterGetter("debug", true)
             }
@@ -235,6 +240,9 @@ function executeCommand(command) {
 
         case "quit": // quit the process
             return(130)
+
+        default: // Command was not found
+            return(127)
     }
 
 } // end: function executeCommand
