@@ -187,7 +187,7 @@ function executeCommand(command) {
                 return(0)
             }
             else {
-                var helpArgument = args[0].replace("--","") // Remove the "--" infront of the argument
+                var helpArgument = args[0].replace("--","")
 
                 if (Object.keys(validCommandsTable).includes(helpArgument)) {
                     CommandsMessage("    " + validCommandsTable[helpArgument.toString()].helpString) // Print the helpString for the help command
