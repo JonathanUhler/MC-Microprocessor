@@ -31,13 +31,13 @@ Revision History:
 							-Fixed bugs with the opcode hash
 							-Reordered the opcode hash to make more sense
 							-Other minor functional changes
-							
+
 	3.3.0	11/22/2020	Chanes in this version:
 							-Added the printAndParseLabels function to handle labels
 							-Print labels at the top of the output
 
 	3.3.1	11/23/2020	Add license
-	
+
 	4.0.0	11/24/2020	Changes in this version:
 							-Replace "let" with "var"
 							-Create the "init" function and move some variable declaractions into it
@@ -54,3 +54,9 @@ Revision History:
 
 	4.1.1	12/12/2020	Changes in this verstion:
 							-Added an option to save the maxTimeoutValue when quitting the program
+
+	4.2.0 12/12/2020  Changes in this version:
+							-Use __dirname to find the config file so that the Assembler
+							 can be run in a directory different from where the .js and
+							 config files live
+							-Allow the input and output files to be specified on the command line

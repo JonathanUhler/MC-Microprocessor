@@ -26,6 +26,16 @@
 // SOFTWARE.
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 
+// FIXME:
+//  - Implement the .pragma imm {dec|hex|def} directive
+//  - Should clear -o be the default? That is, why does the user have to specify this?
+//  - What does clear -i do? It doesn't seem like you want to delete the input file
+//  - Should the directory command be changed to be the file command? The command specifies
+//    the full path to the input and output files, including the filename, not just the directory
+//  - It doesn't look like .loc works
+//  - It doesn't look like the PC of a branch to a label is patching the instruction with the
+//    pc value. See runningsum.asm for an example of this and the .loc problem
+
 // ================================================================================================
 // terminal commands
 //
@@ -49,7 +59,7 @@
 
 
 // Import data from assembler.js
-var importedData = require('./assembler.js')
+var importedData = require(__dirname + '/assembler.js')
 
 
 const validCommandsTable = {
@@ -109,6 +119,18 @@ function CommandsMessage(msg, ...args) {
 // 127:     invoked command does not exist
 // 128:     invoked command had invalid arguments
 // 130:     script terminated with "quit" or ctrl + d
+
+// Pull any command line arguments off, skipping the "node asm.js" arguments
+// and make those the new defaults for input and output directories
+var inputFile = ''
+var outputFile = ''
+var argv = process.argv.slice(2);
+if (argv.length > 0) {
+  importedData.setterGetter("input", argv[0])
+}
+if (argv.length > 1) {
+  importedData.setterGetter("output", argv[1])
+}
 
 // Get the current folder
 var pathToFile = __dirname.split("/")
@@ -201,7 +223,7 @@ function executeCommand(command) {
                     return(128)
                 }
             }
-        
+
         case "directory": // update the input or output file path
 
             if (args[0].toString() === "-i") {
@@ -215,10 +237,10 @@ function executeCommand(command) {
             }
 
             return(0)
-            
+
         case "clear":
             return(0)
-    
+
         case "debug": // Toggle the MC-AMSG messages
             if (args[0].toString() === "--on") {
                 var updateDebug = importedData.setterGetter("debug", true)
@@ -257,7 +279,7 @@ function printHelp() {
 
     // Print all the valid commands
     for (var i in validCommandsTable) {
-        
+
         CommandsMessage("    " + validCommandsTable[i].helpString)
 
     } // end: for

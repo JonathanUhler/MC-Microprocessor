@@ -8,7 +8,7 @@
 
 const { match } = require('assert')
 
-const AssemblerVersion = "4.1.0"
+const AssemblerVersion = "4.2.0"
 
 // Revision History
 //
@@ -36,6 +36,13 @@ const AssemblerVersion = "4.1.0"
 //
 // 4.1.1	12/12/2020	Changes in this verstion:
 //							-Added an option to save the maxTimeoutValue when quitting the program
+//
+// 4.2.0  12/12/2020  Changes in this version:
+//              -Use __dirname to find the config file so that the Assembler
+//               can be run in a directory different from where the .js and
+//               config files live
+//              -Allow the input and output files to be specified on the command line
+
 
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 // MIT License
@@ -231,7 +238,7 @@ const instructionValidationTable = {
 	"ld" :   {opcode: 24, argCount: 3, args:["rw","ra","imm"]},
 	"st" :   {opcode: 25, argCount: 3, args:["rw","ra","imm"]},
 	"halt" : {opcode: 31, argCount: 1, args:["imm"]},
-	
+
 	// pseudo instructions that provide more intuitive access to certain instructions
 	"nop" :  {opcode:  0, argCount: 0, args:[]},
 	"li"  :  {opcode:  8, argCount: 2, args:["rw","imm"]},
@@ -297,14 +304,14 @@ function replaceStringInData(directory, search, replace) {
 	// Return the edited array of lines
 	AssemblerMessage("Replace string in data return:	", returnData)
 	return returnData
-	
+
 } // end: function replaceStringInData
 
 
 // The locations of the input and output text files (edit from here for easy
 // access)
 var fs = require('fs');
-var savedData = fs.readFileSync('./config.json'), readSavedData
+var savedData = fs.readFileSync(__dirname + '/config.json'), readSavedData
 
 try {
 	readSavedData = JSON.parse(savedData);
@@ -341,7 +348,7 @@ function setterGetter(dataToChange, newValue) {
 			inputDirectory = newValue
 			AssemblerMessage(`New inputDirectory value is ${inputDirectory}`)
 			break
-		
+
 		case "output":
 			outputDirectory = newValue
 			AssemblerMessage(`New outputDirectory value is ${outputDirectory}`)
@@ -420,7 +427,7 @@ function init() {
 		printAndParseLabels(matchStr.label, pcLabel.toString(16))
 	}
 
-	// For each line, parse and build the 
+	// For each line, parse and build the
 	// This is where the actual assembly code is processed
 	for (var i = 0; i < lines.length; i++) { // "lines" is the array of all the lines from the input file
 
@@ -527,7 +534,7 @@ function buildInstruction(parsedValue) {
 	var instruction = 0
 	var errorMessage = ""
 	var brTarget
-  
+
 	var iValEntry = instructionValidationTable[parsedValue.opcode]
 	// Get the instruction validation entry based on the opcode. If this comes
 	// back undefined, then it was an invalid instruction
@@ -535,43 +542,43 @@ function buildInstruction(parsedValue) {
 		errorMessage = "Opcode not recogignized: " + parsedValue.opcode
 		return { result: false, instruction: 0, brTarget: "", immWasHex: false, message: errorMessage }
 	}
-  
+
 	// Start building the instruction with the opcode
 	instruction |= iValEntry.opcode << instructionFields["opcode"].startsAt
-  
+
 	// Confirm that the argument count was what was expected
 	if (iValEntry.argCount !== parsedValue.argCount) {
 		errorMessage = parsedValue.opcode + " had the wrong argument count: expected " + iValEntry.argCount + ", saw " + parsedValue.argCount
 		return { result: false, instruction: 0, brTarget: "", immWasHex: false, message: errorMessage }
 	}
-  
+
 	var immWasHex = false
 	var fieldArgs = iValEntry.args
 	for (var i = 0; i < iValEntry.argCount; i++) {
-  
+
 		// argType is the argument type for this argument from instructionValidationTable[opcode].args[i]
 		var argType = fieldArgs[i]
-	
+
 		// iField is the expected argument field
 		var iField = instructionFields[argType]
-	
+
 		// argSupplied is the text of the argument
 		var argSupplied = parsedValue.args[i]
-	
+
 		// Use the pattern for this argument type to parse the text value
 		var argMatch = argSupplied.match(iField.pattern)
-	
+
 		// If the parse fails, it's an error
 		if (argMatch === null || argMatch[1] === undefined) {
 			errorMessage = parsedValue.opcode + " had incorrect argument " + String(i+1) + ": " + argSupplied
 			return{result: false, instruction: 0, brTarget: "", immWasHex: false, message: errorMessage}
 		}
-	
+
 		// If this field is a branch target, we're done
 		if (iField.isLabel) {
 			return{result: true, instruction: instruction, immWasHex: false, brTarget: argSupplied, message: ""}
 		}
-	
+
 		// For anything else, make sure that the value is in range
 		if (argMatch[1] < iField.minVal || argMatch[1] > iField.maxVal) {
 			errorMessage = parsedValue.opcode + " argument " + String(i+1) + " was out of range: " + argSupplied
@@ -580,7 +587,7 @@ function buildInstruction(parsedValue) {
 		// At this point, argMatch[1] is the value of the argument as returned by the RegExp
 		// parse. For registers, which look like "r10", argMatch[1] contains 10. For an
 		// immediate value, it is the value, which may have a 0x prefix.
-	
+
 		var immValue = 0
 		// If this is an immediate, we have to separate out the hex and decimal values and
 		// parse them differently. If the parse fails, it's an error
@@ -588,7 +595,7 @@ function buildInstruction(parsedValue) {
 			if (argMatch[1].slice(0,2) === "0x") {
 				immValue = parseInt(argMatch[1].slice(2), 16)
 				immWasHex = true
-			} 
+			}
 			else {
 				immValue = parseInt(argMatch[1], 10)
 			}
@@ -600,18 +607,18 @@ function buildInstruction(parsedValue) {
 			// Jam the value back into argMatch[i] and var the code below handle combining it
 			argMatch[1] = immValue
 		}
-	
+
 		// Finally, argMatch[i] has the value of the field. Mask it, shift it to the
 		// right position in the instruction, and OR it in.
 		instruction |= (argMatch[1] & iField.mask) << iField.startsAt
-  
+
 	} // end: for (var i = 0; i < iValEntry.argCount; i++)
-  
+
 	return { result: true, instruction: instruction, immWasHex: immWasHex, brTarget: "", message: "" }
-  
-  
+
+
 	// Loop over the arguments and validate them
-  
+
 } // end: function buildInstruction
 
 
@@ -660,7 +667,7 @@ function lineParse(line) {
 	if (match !== null) {
 		opcode = ".loc"
 		line = match[1]
-	} 
+	}
 	else {
 		// If not .loc, then it must be an opcode with optional args
 		const opcodeRegExp = /^(\w+)\s*(.*)$/
