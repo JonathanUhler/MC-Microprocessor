@@ -65,6 +65,9 @@ const validCommandsTable = {
 var exitCode = 0
 
 
+// .pragma imm {hex|dec|def}
+
+
 // ================================================================================================
 // fuction CommandsMessage
 //
