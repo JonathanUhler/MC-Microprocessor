@@ -51,3 +51,6 @@ Revision History:
 							-Implement more commands
 							-Add config.json to handle config data
 							-Minor bug fixes
+
+	4.1.1	12/12/2020	Changes in this verstion:
+							-Added an option to save the maxTimeoutValue when quitting the program

@@ -33,6 +33,9 @@ const AssemblerVersion = "4.1.0"
 //							-Implement more commands
 //							-Add config.json to handle config data
 //							-Minor bug fixes
+//
+// 4.1.1	12/12/2020	Changes in this verstion:
+//							-Added an option to save the maxTimeoutValue when quitting the program
 
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 // MIT License
@@ -298,7 +301,6 @@ function replaceStringInData(directory, search, replace) {
 } // end: function replaceStringInData
 
 
-
 // The locations of the input and output text files (edit from here for easy
 // access)
 var fs = require('fs');
@@ -314,7 +316,7 @@ catch (err) {
 var inputDirectory = readSavedData[0]
 var outputDirectory = readSavedData[1]
 AssemblerMessageEnable = readSavedData[2]
-var maxTimeoutValue = 500
+var maxTimeoutValue = readSavedData[3]
 
 
 // ================================================================================================
@@ -362,7 +364,7 @@ function setterGetter(dataToChange, newValue) {
 
 	// Save config data
 	var fs = require('fs');
-	var dataToSave = [inputDirectory, outputDirectory, AssemblerMessageEnable]
+	var dataToSave = [inputDirectory, outputDirectory, AssemblerMessageEnable, maxTimeoutValue]
 	var configData = JSON.stringify(dataToSave);
 
 	// Write the new config data to the config.json file
