@@ -15,3 +15,29 @@
 0x09: 0x0000000
 0x0a: 0x0000000
 // Fatal error: maxTimeoutValue exceeded! Program terminated at line 11
+// assembler.js v4.1.0
+// 12-12-2020 17:45:54
+.label loop 0x03
+.label bad 0x1a
+0x00: 0x0000000
+0x01: 0x0810000
+// Fatal error: maxTimeoutValue exceeded! Program terminated at line 2
+// assembler.js v4.1.0
+// 12-12-2020 17:46:4
+.label loop 0x03
+.label bad 0x1a
+0x00: 0x0000000
+0x01: 0x0810000
+// Fatal error: maxTimeoutValue exceeded! Program terminated at line 2
+.label loop 0x1e
+.label bad 0x35
+0x03: 0x0000000
+0x04: 0x0810000
+// Fatal error: maxTimeoutValue exceeded! Program terminated at line 2
+// assembler.js v4.1.0
+// 12-12-2020 17:46:14
+.label loop 0x03
+.label bad 0x1a
+0x00: 0x0000000
+0x01: 0x0810000
+// Fatal error: maxTimeoutValue exceeded! Program terminated at line 2
