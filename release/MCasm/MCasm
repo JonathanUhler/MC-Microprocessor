@@ -1,0 +1,4 @@
+jar_path="`dirname \"$0\"`/MCasm.jar"
+
+args="$*"
+java -jar $jar_path $args

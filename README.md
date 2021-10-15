@@ -1,22 +1,40 @@
-# Minecraft-Assembler
-
-A simple assembler program with terminal commands
+# MC-asm
+An assembler program for Minecraft microprocessors. Accompanied by MCSdis, MCSsim, and the 8-bit redstone microprocessor
 
 
 # Dependencies
-
-nodejs - https://nodejs.org/en/download/
-
-
-# asm.js Usage
-
-To run the assembler, navigate to the downloaded folder of the repository and use "node asm.js" This will open the command processor from which you can type "help --all" to see command help for all commands. In order to run the assembler, there must be assembly code in the input.asm file.
-
-The input and output files can be specified on the command line with:
-
-node asm.js [input-file] [output-file]
+javacli, https://github.com/JonathanUhler/Java-CLI
 
 
-# assembler.js Usage
+# Installation
+MC-asm can be installed via
 
-To assemble actual code, run asm.js with node and use the "run" command. If debug is enabled, you should see basic debug messages. From there, the assembled code should be printed to output.bin or to the file specified on the command line, or via the directory -o command
+> git clone https://github.com/JonathanUhler/MC-asm.git
+
+Then simply navigate to the working directory with the project and run it from the command line (see MCasm Usage).
+
+
+# MCasm Usage
+MC-asm is a command line app which uses the javacli library and follows standard POSIX conventions. \
+To run the assembler, navigate to the ```src/``` directory and use ```./MCasm``` \
+The command line arguments and options are:
+
+> usage: MCasm [-Vvt] [--help] INFILE OUTFILE 
+
+## Options
+| Option            | Usage                                          |
+| ----------------- | ---------------------------------------------- |
+| -V, --verbose     | Runs the assembler with verbose output         | 
+| -t, --timeout INT | Number of lines to be assembled before timeout |
+| -v, --version     | Print the version and exit                     |
+| -h, --help        | Print help message and exit                    |
+
+## Arguments
+| Argument | Usage                                 |
+| -------- | ------------------------------------- |
+| infile   | Input file with assembly instructions |
+| outfile  | File to print out to                  |
+
+
+# Input and Output File Formatting
+
