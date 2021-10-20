@@ -6,37 +6,6 @@
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
 
 
-// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-// USAGE: java MCasm [-Vhv] [-t <value>] <infile> <outfile>
-//
-// Options
-//
-// -v, --version:       prints the version of the program
-//
-// --help:              prints information about the commands
-//
-// -V, --verbose:       runs the assembler with verbose debug
-//
-// -t, --timeout value: specified how many lines will be assembled before timeout occurs
-//
-// Arguments
-//
-// <infile>:            required input/read file
-//
-// <outfile>:           required output/write file
-//
-// end: terminal commands
-// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
-
-// FIXME:
-//  - Implement the .pragma imm {dec|hex|def} directive
-//  - Should clear -o be the default? That is, why does the user have to specify this?
-//  - What does clear -i do? It doesn't seem like you want to delete the input file
-//  - It doesn't look like .loc works
-//  - It doesn't look like the PC of a branch to a label is patching the instruction with the
-//    pc value. See runningsum.asm for an example of this and the .loc problem
-
-
 package main;
 
 
@@ -45,6 +14,8 @@ import javacli.annotations.Argument;
 import javacli.annotations.Version;
 import javacli.OptionParser;
 import assembler.Assembler;
+import java.io.FileWriter;
+import java.util.ArrayList;
 
 
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
@@ -56,27 +27,47 @@ public class MCasm {
 
     public static final String MCasmVersion = "1.0.0";
 
+    // Define arguments and options
     @Option(name = "verbose", abbreviation = 'V', help = "runs the assembler with verbose output", isFlag = true, type = boolean.class) public static boolean verbose;
     @Option(name = "timeout", abbreviation = 't', help = "number of lines to be assembled before timeout", type = int.class, nargs = 1, defaultValue = "500", showDefault = true) public static int timeout;
+    @Option(name = "force", abbreviation = 'f', help = "overwrites existing contents in the output file", isFlag = true, type = boolean.class) public static boolean force;
+    @Option(name = "outfile", abbreviation = 'o', help = "specify the location of an output file", nargs = 1) public static String outfile;
     @Argument(name = "infile") public static String infile;
-    @Argument(name = "outfile") public static String outfile;
     @Version(version = MCasmVersion, abbreviation = 'v') public static String version;
 
 
     // ====================================================================================================
+    // public static void main
+    //
+    // Main method
+    //
+    // Arguments--
+    //
+    // args:    list of command line arguments
+    //
+    // Returns--
+    //
+    // None
+    //
     public static void main(String[] args) throws Exception {
+        OptionParser optionParser = new OptionParser(MCasm.class); // Create a new option parser to parse command line args
+        optionParser.parse(args); // Parse the arguments
 
-        OptionParser optionParser = new OptionParser(MCasm.class);
-        optionParser.parse(args);
+        Assembler assembler = new Assembler(infile); // Create a new assembler to parse the data
+        ArrayList<String> assembledLines = assembler.assemble(); // Assemble the lines
 
-        Assembler a = new Assembler();
+        // If the output file is not specified, then print out each line to the console
+        if (outfile == null) {
+            for (String line : assembledLines) System.out.println(line);
+            return;
+        }
 
-        System.out.println("verbose: " + verbose);
-        System.out.println("timeout: " + timeout);
-        System.out.println("infile: " + infile);
-        System.out.println("outfile: " + outfile);
-
+        // If the output file is specified, write out each line
+        FileWriter outWriter = new FileWriter(outfile, !force);
+        for (String line : assembledLines) outWriter.write(line + "\n");
+        outWriter.close();
     }
+    // end: public static void main
 
 }
 // end: public class MCasm
