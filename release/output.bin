@@ -1,5 +1,5 @@
 // Assembled by MC-Assembler version 1.0.0
-// Wed Oct 20 14:25:01 PDT 2021, process took 18ms
+// Wed Oct 20 19:57:14 PDT 2021, process took 20ms
 .label loop 0x3					// loop:
 .label bad 0x40					// bad:
 0x0: 0x0000000					// nop
@@ -7,11 +7,11 @@
 0x2: 0x0820001					// li r2, 1
 0x3: 0x0611200					// add r1, r1, r2
 0x4: 0x0c32014					// cmpi r3, r2, 20
-0x5: 0x1003003					// brz r3, loop
+0x5: 0x1000303					// brz r3, loop
 0x6: 0x0e22001					// addi r2, r2, 1
 0x7: 0x0000000					// nop
 0x8: 0x0c310d2					// cmpi r3, r1, 210
-0x9: 0x1003040					// brz r3, bad
+0x9: 0x1000340					// brz r3, bad
 0xa: 0x0000000					// nop
 0xb: 0x1f00000					// halt 0
 0xc: 0x0000000					// nop

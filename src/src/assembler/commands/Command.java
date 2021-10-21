@@ -40,8 +40,8 @@ public class Command {
         put("addi", new Command(new Opcode(Opcode.ADDI), new Register(Register.WRITE), new Register(Register.READ_A), new Register(Register.NONE), new Register(Register.READ_IMM)));
         put("subi", new Command(new Opcode(Opcode.SUBI), new Register(Register.WRITE), new Register(Register.READ_A), new Register(Register.NONE), new Register(Register.READ_IMM)));
 
-        put("brz", new Command(new Opcode(Opcode.BRZ), new Register(Register.NONE), new Register(Register.READ_A), new Register(Register.NONE), new Register(Register.LABEL)));
-        put("bro", new Command(new Opcode(Opcode.BRO), new Register(Register.NONE), new Register(Register.READ_A), new Register(Register.NONE), new Register(Register.LABEL)));
+        put("brz", new Command(new Opcode(Opcode.BRZ), new Register(Register.NONE), new Register(Register.NONE), new Register(Register.READ_B), new Register(Register.LABEL)));
+        put("bro", new Command(new Opcode(Opcode.BRO), new Register(Register.NONE), new Register(Register.NONE), new Register(Register.READ_B), new Register(Register.LABEL)));
         put("mflo", new Command(new Opcode(Opcode.MF), new Register(Register.WRITE), new Register(Register.NONE), new Register(Register.NONE), new Register(Register.READ_IMM)));
         put("mfhi", new Command(new Opcode(Opcode.MF), new Register(Register.WRITE), new Register(Register.NONE), new Register(Register.NONE), new Register(Register.READ_IMM)));
 
