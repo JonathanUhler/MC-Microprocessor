@@ -28,8 +28,16 @@ import java.util.Scanner;
 //
 public class Assembler {
 
+    private final boolean verboseOutput;
+    private final int timeoutLimit;
+    private int lineNumber = 0;
     private ArrayList<String> linesToAssemble = new ArrayList<>(); // List of the lines to be assembled
     private int programCounter; // Program counter value
+
+
+    public Assembler(String inputFile, int timeoutLimit) throws FileNotFoundException {
+        this(inputFile, timeoutLimit, false);
+    }
 
 
     // ----------------------------------------------------------------------------------------------------
@@ -41,7 +49,10 @@ public class Assembler {
     //
     // inputFile:   the location of the file with lines to assemble
     //
-    public Assembler(String inputFile) throws FileNotFoundException {
+    public Assembler(String inputFile, int timeoutLimit, boolean verbose) throws FileNotFoundException {
+        this.verboseOutput = verbose;
+        this.timeoutLimit = timeoutLimit;
+
         // Create a file object from the inputFile string
         // If the file starts with "/" then it is an absolute path, otherwise append it to the user's working directory
         File input = (inputFile.startsWith("/")) ? new File(inputFile) : new File(System.getProperty("user.dir") + "/" + inputFile);
@@ -70,6 +81,8 @@ public class Assembler {
     //
     private String assembleDirective(String lineToAssemble) throws Exception {
         String directiveType = lineToAssemble.split(" ")[0].replace(".", ""); // Get the directive type
+
+        if (this.verboseOutput) System.out.println("MCasm  " + this.lineNumber + ":\tAssembling directive \"" + lineToAssemble + "\"" + " of type " + directiveType);
 
         // Switch through tht type of directive to parse it correctly
         switch (directiveType) {
@@ -113,6 +126,8 @@ public class Assembler {
 
         Register.addRegister(labelName, this.programCounter); // Add the label as a valid register that can be referenced
 
+        if (this.verboseOutput) System.out.println("MCasm  " + this.lineNumber + ":\tAssembling label \"" + lineToAssemble + "\"" + " with name " + labelName + " and PC reference " + labelPC);
+
         return ".label " + labelName + " 0x" + labelPC; // Return the label as a directive to be parsed by the disassembler
     }
     // end: private String assembleLabel
@@ -154,6 +169,8 @@ public class Assembler {
         arguments.remove(0); // Remove the first element, which is the opcode and thus not an argument
         command.setRegisterValues(arguments); // Set the register values for the command
 
+        if (this.verboseOutput) System.out.println("MCasm  " + this.lineNumber + ":\tAssembling instruction \"" + lineToAssemble + "\"" + " with opcode " + opcode + " and " + numArgs + " arguments");
+
         return "0x" + Integer.toHexString(this.programCounter) + ": 0x" + command.packArguments(); // Return the parsed instruction
     }
     // end: private String assembleLine
@@ -172,6 +189,8 @@ public class Assembler {
     //
     // The list of cleaned lines
     private ArrayList<String> cleanUpLines(ArrayList<String> linesToClean) {
+        if (this.verboseOutput) System.out.println("MCasm  " + this.lineNumber + ":\tCleaning up input");
+
         ArrayList<String> cleanedLines = new ArrayList<>(); // Initialize a list to hold the cleaned lines
 
         for (String lineToClean : linesToClean) {
@@ -221,9 +240,14 @@ public class Assembler {
         this.linesToAssemble = this.cleanUpLines(this.linesToAssemble); // Clean up the input lines by removing whitespace and comments
 
         // First, loop through all the lines once for the labels
+        if (this.verboseOutput) System.out.println("MCasm  " + this.lineNumber + ":\tFinding labels");
         for (String lineToAssemble : this.linesToAssemble) {
             // If the line is a label, parse and add it
-            if (lineToAssemble.matches(".+:.*")) assembledLines.add(this.assembleLabel(lineToAssemble) + "\t\t\t\t\t// " + lineToAssemble);
+            if (lineToAssemble.matches(".+:.*")) {
+                assembledLines.add(this.assembleLabel(lineToAssemble) + "\t\t\t\t\t// " + lineToAssemble);
+                this.lineNumber++;
+                if (this.lineNumber > this.timeoutLimit) AssemblerHelper.asmAssert(false, "Timeout limit exceeded at line " + this.lineNumber + " (PC " + this.programCounter + ")");
+            }
             // If the line is a directive, parse it, but don't add anything
             // This won't add directives for the disassembler (like pragma) but will parse .loc which effects the parsing of labels
             else if (lineToAssemble.startsWith(".")) this.assembleDirective(lineToAssemble);
@@ -234,20 +258,26 @@ public class Assembler {
         this.programCounter = 0x0; // Reset the program counter
 
         // Loop through everything again to parse instructions and other directive
+        if (this.verboseOutput) System.out.println("MCasm  " + this.lineNumber + ":\tParsing lines and directives");
         for (String lineToAssemble : this.linesToAssemble) {
             // Parse directives if they are found
             if (lineToAssemble.startsWith(".")) {
                 String assembledDirective = this.assembleDirective(lineToAssemble);
                 if (!assembledDirective.equals("")) assembledLines.add(assembledDirective + "\t\t\t\t\t// " + lineToAssemble);
+                this.lineNumber++;
+                if (this.lineNumber > this.timeoutLimit) AssemblerHelper.asmAssert(false, "Timeout limit exceeded at line " + this.lineNumber + " (PC " + this.programCounter + ")");
             }
             // Parse everything other than directives and labels (eg instructions)
             else if (!lineToAssemble.matches(".+:.*")) {
                 assembledLines.add(this.assembleLine(lineToAssemble) + "\t\t\t\t\t// " + lineToAssemble); // Add the assembled line
+                this.lineNumber++;
+                if (this.lineNumber > this.timeoutLimit) AssemblerHelper.asmAssert(false, "Timeout limit exceeded at line " + this.lineNumber + " (PC " + this.programCounter + ")");
                 this.programCounter++; // Increment the program counter
             }
         }
 
         // Specify the length of the process in a second comment as the top
+        if (this.verboseOutput) System.out.println("MCasm  " + this.lineNumber + ":\tFinalizing");
         assembledLines.add(1, "// " + new Date() + ", process took " + (new Date().getTime() - processStartMS) + "ms");
 
         return assembledLines; // Return all the lines

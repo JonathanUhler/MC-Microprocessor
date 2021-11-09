@@ -12,6 +12,9 @@ PRE-RELEASES--
     1.0.1   10/10/21    Changes in this version:
                             -Changed the read register for brz and bro from ra to rb
 
+    1.0.2   11/9/21     Changes in this version:
+                            -Implemented the -V and -t options
+
 FULL-RELEASES--
 
 	version   date          changes

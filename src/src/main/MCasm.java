@@ -53,7 +53,7 @@ public class MCasm {
         OptionParser optionParser = new OptionParser(MCasm.class); // Create a new option parser to parse command line args
         optionParser.parse(args); // Parse the arguments
 
-        Assembler assembler = new Assembler(infile); // Create a new assembler to parse the data
+        Assembler assembler = new Assembler(infile, timeout, verbose); // Create a new assembler to parse the data
         ArrayList<String> assembledLines = assembler.assemble(); // Assemble the lines
 
         // If the output file is not specified, then print out each line to the console
