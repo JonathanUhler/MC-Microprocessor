@@ -1,6 +1,5 @@
+# Compiled/artifact files
 .DS_Store
-.idea/*
-tests/*
-MC-Assembler.iml
-release/output.bin
-release/runningsum.asm
+*~
+obj
+**/deprecated

@@ -1,22 +1,44 @@
-# MC-Assembler Changelog
+# MC-Microprocessor Changelog
+All notable changes to any project under MC-Microprocessor should be documented in this file.
 
-Project created 6/2/21 -- Changelog begin:
+## [M.m.p] - M/D/YY
+### Added
+### Fixed
+### Changed
 
-PRE-RELEASES--
+## [MC-Assembler 2.0.0] - 12/29/22
+### Added
+* Native support for disassembly
+### Fixed
+### Changed
+* Improved codebase
 
-	version   date          changes
-	------- --------    ----------------------------------------------------------------------------------------------------
-    1.0.0   10/20/21    Changes in this version:
-                            -First full working version of MC-Assembler
+## [PM-Generator 1.0.0] - 11/17/21
+### Added
+* First working version of PM-Generator
+### Fixed
+### Changed
 
-    1.0.1   10/10/21    Changes in this version:
-                            -Changed the read register for brz and bro from ra to rb
+## [MC-Assembler 1.0.2] - 11/9/21
+### Added
+* Implemented the -V and -t options
+### Fixed
+### Changed
 
-    1.0.2   11/9/21     Changes in this version:
-                            -Implemented the -V and -t options
+## [NBT-Editor 1.0.0] - 10/23/21
+### Added
+* First working version of NBT-Editor (unpacking only)
+### Fixed
+### Changed
 
-FULL-RELEASES--
+## [MC-Assembler 1.0.1] - 10/20/21
+### Added
+### Fixed
+* Changed the read register for `brz` and `bro` from `ra` to `rb`
+### Changed
 
-	version   date          changes
-	------- --------    ----------------------------------------------------------------------------------------------------
-    
+## [MC-Assembler 1.0.0] - 10/10/21
+### Added
+* First full working version of MC-Assembler
+### Fixed
+### Changed

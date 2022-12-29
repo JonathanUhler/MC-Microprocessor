@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+jar_path="`dirname \"$0\"`/MCasm.jar"
+lib_path="`dirname \"$0\"`/lib/picocli.jar"
+
+args="$*"
+java -cp $lib_path -jar $jar_path $args

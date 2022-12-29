@@ -1,0 +1,21 @@
+TAG_Compound Schematic 10 = {
+	TAG_ByteArray Blocks 27 = [
+		2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 5
+	]
+	TAG_ByteArray Data 27 = [
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	]
+	TAG_List Entities 0 = (
+	)
+	TAG_List TileEntities 0 = (
+	)
+
+	TAG_String Materials = Alpha
+
+	TAG_Short Height = 3
+	TAG_Short Length = 3
+	TAG_Short Width = 3
+	TAG_Int WEOffsetX = 0
+	TAG_Int WEOffsetY = 0
+	TAG_Int WEOffsetZ = 0
+}

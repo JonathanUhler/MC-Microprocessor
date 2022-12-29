@@ -1,0 +1,4 @@
+jar_path="`dirname \"$0\"`/PMGenerator.jar"
+
+args="$*"
+java -jar $jar_path $args
