@@ -6,6 +6,12 @@ All notable changes to any project under MC-Microprocessor should be documented 
 ### Fixed
 ### Changed
 
+## [PM-Generator 2.0.1] - 12/30/22
+### Added
+* --zip option
+### Fixed
+### Changed
+
 ## [PM-Generator 2.0.0] - 12/30/22
 ### Added
 ### Fixed

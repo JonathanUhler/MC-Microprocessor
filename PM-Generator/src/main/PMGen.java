@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.zip.GZIPOutputStream;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -15,7 +16,7 @@ import picocli.CommandLine.Parameters;
 public class PMGen implements Runnable {
 
 	// CLI options and information
-	public static final String VERSION = "2.0.0";
+	public static final String VERSION = "2.0.1";
 
 	@Parameters(paramLabel = "IN_FILE", description = "Input file with assembled instructions.")
 	private String inPath;
@@ -29,6 +30,9 @@ public class PMGen implements Runnable {
 	@Option(names = {"-f", "--force"},
 			description = "Overwrite existing content in the output file, if -o is used. If not specified, appends.")
 	private boolean force;
+
+	@Option(names = {"-z", "--zip"}, description = "Zip the output file, if specified.")
+	private boolean zip;
 
 	@Option(names = {"-o", "--outfile"}, paramLabel = "<OUT_FILE>",
 			description = "Specify the location of an output file. If not specified, output is printed to stdout.")
@@ -63,9 +67,8 @@ public class PMGen implements Runnable {
 		// Write to output file or stdout
 		if (this.outPath != null)
 			this.saveData(programMemory);
-		else {
+		else
 			Log.stdout(Log.INFO, "PMGen", new String(programMemory));
-		}
 	}
 
 
@@ -90,8 +93,16 @@ public class PMGen implements Runnable {
 	public void saveData(byte[] data) {
 		try {
 			FileOutputStream fos = new FileOutputStream(this.outPath, !this.force);
-			fos.write(data);
-			fos.close();
+
+			if (this.zip) {
+				GZIPOutputStream gzos = new GZIPOutputStream(fos);
+				gzos.write(data, 0, data.length);
+				gzos.close();
+			}
+			else {
+				fos.write(data);
+				fos.close();
+			}
 		}
 		catch (IOException e) {
 			Log.stdout(Log.FATAL, "PMGen", "Cannot write OUT_FILE: " + e);
