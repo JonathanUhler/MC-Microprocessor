@@ -1,9 +1,9 @@
-# Unzip contents of all dependencies to create a single fat jar
-unzip -oq src/lib/javacli.jar -d src/jv/
-rm -rf src/jv/META-INF
-unzip -oq src/lib/NBTEditor.jar -d src/jv/
-rm -rf src/jv/META-INF
+#!/bin/bash
 
 
-# Compile java code
-javac -cp "src/lib/*" -d src/jv/ $(find ./src/ -name '*.java')
+# Setup
+mkdir -p obj
+rm -rf obj/*
+
+# Compile
+javac -Xlint:unchecked -Xlint:deprecation -cp 'src/lib/*' -d obj/ $(find src/main -name '*.java')

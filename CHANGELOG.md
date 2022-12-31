@@ -6,6 +6,14 @@ All notable changes to any project under MC-Microprocessor should be documented 
 ### Fixed
 ### Changed
 
+## [PM-Generator] - 12/30/22
+### Added
+### Fixed
+* "Redstone repeaters" are now properly generated
+### Changed
+* Improved codebase
+* Deprecated NBT-Editor in favor of a more polished third-party library
+
 ## [MC-Assembler 2.0.0] - 12/29/22
 ### Added
 * Native support for disassembly
