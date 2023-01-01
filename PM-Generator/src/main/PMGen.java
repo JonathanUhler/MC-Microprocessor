@@ -31,7 +31,7 @@ public class PMGen implements Runnable {
 			description = "Overwrite existing content in the output file, if -o is used. If not specified, appends.")
 	private boolean force;
 
-	@Option(names = {"-z", "--zip"}, description = "Zip the output file, if specified.")
+	@Option(names = {"-z", "--zip"}, description = "Zip the output file, if -o is used.")
 	private boolean zip;
 
 	@Option(names = {"-o", "--outfile"}, paramLabel = "<OUT_FILE>",
