@@ -106,6 +106,8 @@ public class Instruction {
 			return new Instruction(Opcode.HALT, none, none, none, readimm, Imm.Type.HEX);
 		case "li":
 			return new Instruction(Opcode.ORI, write, none, none, readimm, Imm.Type.HEX);
+		case "mov":
+			return new Instruction(Opcode.ORI, write, reada, none, none);
 		case "nop":
 			return new Instruction(Opcode.OR, none, none, none, none);
 		case "br":
@@ -249,7 +251,10 @@ public class Instruction {
 	}
 
 
-	private String toAssemblyValue(Register.Type registerType, String registerValue, Imm.Type immType) {
+	private String toAssemblyValue(Register register, Imm.Type immType) {
+		Register.Type registerType = register.getType();
+		String registerValue = register.getValue();
+		
 		int intValue;
 		try {
 			intValue = Integer.parseInt(registerValue);
@@ -304,29 +309,30 @@ public class Instruction {
 		case ORI:
 			// LI -- opcode == ORI, reada == 0
 			if (Integer.parseInt(this.reada.getValue()) == 0) {
-				return "li" + Lang.STD_DELIMITER +
-					this.toAssemblyValue(this.write.getType(), this.write.getValue(), immType) +
-					Lang.ARG_DELIMITER + Lang.STD_DELIMITER +
-					this.toAssemblyValue(this.aux.getType(), this.aux.getValue(), immType);
+				return "li" + Lang.STD_DELIMITER + this.toAssemblyValue(this.write, immType) +
+					Lang.ARG_DELIMITER + Lang.STD_DELIMITER + this.toAssemblyValue(this.aux, immType);
+			}
+			// MOV -- opcode == ORI, imm = 0
+			else if (Integer.parseInt(this.aux.getValue()) == 0) {
+				return "mov" + Lang.STD_DELIMITER + this.toAssemblyValue(this.write, immType) +
+					Lang.ARG_DELIMITER + Lang.STD_DELIMITER + this.toAssemblyValue(this.reada, immType);
 			}
 			break;
 		case BRZ:
 			// BR -- opcode == BRZ, readb == 0
 			if (Integer.parseInt(this.readb.getValue()) == 0) {
 				return "br" + Lang.STD_DELIMITER +
-					this.toAssemblyValue(this.aux.getType(), this.aux.getValue(), immType);
+					this.toAssemblyValue(this.aux, immType);
 			}
 			break;
 		case MF:
 			// MFLO -- opcode == MF, readimm == 0 and MFHI -- opcode == MF, readimm == 1
 			int mfType = Integer.parseInt(this.aux.getValue());
-			Register.Type mfRegType = this.write.getType();
-			String mfRegValue = this.write.getValue();
 			switch (mfType) {
 			case 0:
-				return "mflo" + Lang.STD_DELIMITER + this.toAssemblyValue(mfRegType, mfRegValue, immType);
+				return "mflo" + Lang.STD_DELIMITER + this.toAssemblyValue(this.write, immType);
 			case 1:
-				return "mfhi" + Lang.STD_DELIMITER + this.toAssemblyValue(mfRegType, mfRegValue, immType);
+				return "mfhi" + Lang.STD_DELIMITER + this.toAssemblyValue(this.write, immType);
 			default:
 				Log.format(Log.ERROR, "Instruction", "unexpected type, mf instruction imm value was " +
 						   mfType + ", should be 0 or 1");
@@ -353,8 +359,7 @@ public class Instruction {
 			if (register.getType() == Register.Type.NONE)
 				continue;
 			
-			String value = register.getValue();
-			str += this.toAssemblyValue(register.getType(), value, immType);
+			str += this.toAssemblyValue(register, immType);
 			if (a < this.numArgs - 1)
 				str += Lang.ARG_DELIMITER + Lang.STD_DELIMITER;
 			a++;

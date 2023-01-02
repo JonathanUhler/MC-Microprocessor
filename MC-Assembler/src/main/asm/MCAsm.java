@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @Command(name = "MCAsm", subcommands = {Assembler.class, Disassembler.class}, version = "MCAsm " + MCAsm.VERSION)
 public class MCAsm implements Runnable {
 
-	public static final String VERSION = "2.0.0";
+	public static final String VERSION = "2.1.0";
 	
 
 	@Spec

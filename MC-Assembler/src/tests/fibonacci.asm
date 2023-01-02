@@ -27,8 +27,8 @@
 
 loop:
 	add r1, r2, r3		// disp = a + b
-	ori r2, r3, 0		// a = b
-	ori r3, r1, 0		// b = disp (a_prev + b_prev)
+	mov r2, r3			// a = b
+	mov r3, r1			// b = disp (a_prev + b_prev)
 
 	cmpi r4, r1, 233	// Is disp == 233?
 	brz r4, loop		// Continue loop if disp != 233

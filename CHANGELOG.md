@@ -6,6 +6,13 @@ All notable changes to any project under MC-Microprocessor should be documented 
 ### Fixed
 ### Changed
 
+## [MC-Assembler 2.1.0] - 1/2/23
+### Added
+* Add `mov rw, ra` psuedo operation (equivelant to `ori rw, ra, 0`)
+### Fixed
+### Changed
+* Minor improvement to commands.Instruction::toAssemblyValue
+
 ## [PM-Generator 2.0.1] - 12/30/22
 ### Added
 * --zip option
