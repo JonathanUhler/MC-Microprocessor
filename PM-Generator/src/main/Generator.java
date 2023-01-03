@@ -139,8 +139,15 @@ public class Generator {
 						}
 						break;
 					case 3:
-						if (z % 2 == 1)
-							blockData[x][y][z] = Generator.NBTID_REDSTONE_DUST;
+						if (z % 2 == 1) {
+							// Place repeaters every 15 block gap, otherwise dust
+							if (x % 16 == 1) {
+								blockData[x][y][z] = Generator.NBTID_REDSTONE_REPEATER;
+								metaData[x][y][z] = 1;
+							}
+							else
+								blockData[x][y][z] = Generator.NBTID_REDSTONE_DUST;
+						}
 						break;
 					}
 				}

@@ -6,6 +6,12 @@ All notable changes to any project under MC-Microprocessor should be documented 
 ### Fixed
 ### Changed
 
+## [PM-Generator 2.1.0] - 1/3/23
+### Added
+### Fixed
+* Fix issue #6; horizontal repeaters are now correctly generated
+### Changed
+
 ## [MC-Assembler 2.1.0] - 1/2/23
 ### Added
 * Add `mov rw, ra` psuedo operation (equivalent to `ori rw, ra, 0`)
