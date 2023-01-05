@@ -7,7 +7,7 @@ Java (Standard Edition) 17 or above - https://www.oracle.com/java/technologies/d
 picocli - https://picocli.info/ (added to `bin/lib` in most projects)
 
 # Installation
-*Note: MC-Microprocessor projects have only been testing on MacOS and likely only work on Unix-based machines*
+*Note: MC-Microprocessor projects have only been tested on MacOS and likely only work on Unix-based machines*
 
 1) Clone the MC-Microprocessor repository.
 2) Drag the contents of `bin` from the desired project to someplace in your `$PATH` and get started with the `--help` flag for all command line applications.
