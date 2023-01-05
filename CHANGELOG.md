@@ -6,6 +6,12 @@ All notable changes to any project under MC-Microprocessor should be documented 
 ### Fixed
 ### Changed
 
+## [PM-Generator 2.1.1] - 1/5/23
+### Added
+* Generate a gold block at the origin of the program memory to identify the paste location
+### Fixed
+### Changed
+
 ## [PM-Generator 2.1.0] - 1/3/23
 ### Added
 ### Fixed

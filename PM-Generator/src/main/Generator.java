@@ -15,6 +15,7 @@ public class Generator {
 	public static final int NBTID_REDSTONE_REPEATER = 93;
     public static final int NBTID_COLORED_WOOL = 1;
     public static final int NBTID_WHITE_WOOL = 35;
+	public static final int NBTID_GOLD_BLOCK = 41;
 	
 
 	private Map<Integer, Integer> assembledInstructions;
@@ -101,8 +102,12 @@ public class Generator {
 					// Fill different blocks based on the vertical layer
 					switch (y) {
 					case 0: // First layer, wool going down the length of the program memory
-						if (x % 2 == 0)
-							blockData[x][y][z] = Generator.NBTID_COLORED_WOOL;
+						if (x % 2 == 0) {
+							if (x == 0 && z == 0) // Place gold block at the origin to identify where to "//paste"
+								blockData[x][y][z] = Generator.NBTID_GOLD_BLOCK;
+							else
+								blockData[x][y][z] = Generator.NBTID_COLORED_WOOL;
+						}
 						break;
 					case 1: // Second layer, redstone dust on first layer
 						if (x % 2 == 0) {
