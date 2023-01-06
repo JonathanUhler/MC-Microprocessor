@@ -93,9 +93,11 @@ public class Generator {
 		byte[][][] blockData = new byte[blockWidth][blockHeight][blockLength];
 		byte[][][] metaData = new byte[blockWidth][blockHeight][blockLength];
 
-		// In the game: x = width, z = length, y = height
-        // Moving across x = moving horizontally across the bits of an instruction
-        // Moving across z = moving laterally down the program memory
+		
+		// In the game: x = width, z = length, y = height.
+        // Moving across x = moving horizontally across the bits of an instruction.
+        // Moving across z = moving laterally down the program memory.
+		// Bits are in the correct order when looking from the back of the program memory to the front.
 		for (int x = 0; x < blockWidth; x++) {
 			for (int y = 0; y < blockHeight; y++) {
 				for (int z = 0; z < blockLength; z++) {
@@ -103,13 +105,13 @@ public class Generator {
 					switch (y) {
 					case 0: // First layer, wool going down the length of the program memory
 						if (x % 2 == 0) {
-							if (x == 0 && z == 0) // Place gold block at the origin to identify where to "//paste"
+							if (x == 0 && z == 0)
 								blockData[x][y][z] = Generator.NBTID_GOLD_BLOCK;
 							else
 								blockData[x][y][z] = Generator.NBTID_COLORED_WOOL;
 						}
 						break;
-					case 1: // Second layer, redstone dust on first layer
+					case 1: // Second layer, redstone dust on the first layer
 						if (x % 2 == 0) {
 							// Place repeaters every 15 block gap, otherwise dust
 							if (z % 16 == 1)
@@ -119,14 +121,12 @@ public class Generator {
 						}
 						break;
 					case 2: // Third layer, wool going across the width of each instruction (with torches)
-						// Place wool for the horizontal line of each instruction (alternate white/colored)
 						if (z % 2 == 1) {
 							if (x % 2 == 0)
 								blockData[x][y][z] = Generator.NBTID_COLORED_WOOL;
 							else
 								blockData[x][y][z] = Generator.NBTID_WHITE_WOOL;
 						}
-						// Place torches based on assembled instruction
 						else if (x % 2 == 0) {
 							int lineNumber = (z + 1) / 2; // Conversion factor from block units to bits
 							if (!this.assembledInstructions.containsKey(lineNumber))
@@ -134,7 +134,7 @@ public class Generator {
 							int bits = this.assembledInstructions.get(lineNumber);
 
 							// Get the currently focused bit and check for torch placement
-							int low = (x + 1) / 2; // Bit of interest
+							int low = (blockWidth - x) / 2; // Bit of interest
 							int mask = ((1 << (low + 1 - low)) - 1) << low;
 							int bit = (bits & mask) >> low; // Get bit with a mask
 							if (bit == 1) {
@@ -143,12 +143,12 @@ public class Generator {
 							}
 						}
 						break;
-					case 3:
+					case 3: // Fourth layer, redstone dust on the third layer
 						if (z % 2 == 1) {
 							// Place repeaters every 15 block gap, otherwise dust
 							if (x % 16 == 1) {
 								blockData[x][y][z] = Generator.NBTID_REDSTONE_REPEATER;
-								metaData[x][y][z] = 1;
+								metaData[x][y][z] = 3;
 							}
 							else
 								blockData[x][y][z] = Generator.NBTID_REDSTONE_DUST;
@@ -158,6 +158,7 @@ public class Generator {
 				}
 			}
 		}
+		
 		
 		// Compress arrays
 		byte[] blockData1D = this.compressArray(blockData);

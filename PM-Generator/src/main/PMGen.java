@@ -16,7 +16,7 @@ import picocli.CommandLine.Parameters;
 public class PMGen implements Runnable {
 
 	// CLI options and information
-	public static final String VERSION = "2.1.1";
+	public static final String VERSION = "2.2.1";
 
 	@Parameters(paramLabel = "IN_FILE", description = "Input file with assembled instructions.")
 	private String inPath;
