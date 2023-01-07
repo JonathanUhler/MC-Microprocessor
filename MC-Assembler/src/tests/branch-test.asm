@@ -52,6 +52,8 @@ plus:
 
 good:
 	halt 0
+	nop
+	nop
 bad:
 	halt 1
 
