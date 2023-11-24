@@ -1,38 +1,82 @@
 package commands;
 
 
-import asm.MCAsm;
-import asm.Lang;
-import util.Log;
-import commands.components.Opcode;
-import commands.components.Register;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import asm.Language;
+import asm.DataManager;
+import commands.components.Opcode;
+import commands.components.Register;
 
 
+/**
+ * Manages an instruction.
+ * <p>
+ * Instructions perform some operation on data in registers. The general syntax for an instruction
+ * is:
+ * {@code opcode rw ra rb [imm]}
+ *
+ * @author Jonathan Uhler
+ */
 public class Instruction {	
 
+	/** The opcode for this instruction. */
 	private Opcode opcode;
+	/** The write register targetted by this instruction. */
 	private Register write;
+	/** The read A register targetted by this instruction. */
 	private Register reada;
+	/** The read B register targetted by this instruction. */
 	private Register readb;
+	/** The auxiliary register targetted by this instruction. */
 	private Register aux;
+	/** The default immediate type for this instruction, if it takes an immediate value. */
 	private Imm.Type immDefaultType;
 
+	/** The list of registers used by this instruction in the order they appear */
 	private Register[] registers;
+	/** The number of arguments expected by this instruction. */
 	private int numArgs;
 
 
-	private Instruction(Opcode opcode, Register write, Register reada, Register readb, Register aux) {
+	/**
+	 * Constructs a new {@code Instruction} object with no immediate value/default type.
+	 *
+	 * @param opcode  the opcode.
+	 * @param write   the write register.
+	 * @param reada   the read A register.
+	 * @param readb   the read B register.
+	 * @param aux     the auxiliary register.
+	 */
+	private Instruction(Opcode opcode,
+						Register write,
+						Register reada,
+						Register readb,
+						Register aux)
+	{
 		this(opcode, write, reada, readb, aux, null);
 	}
 
 
-	private Instruction(Opcode opcode, Register write, Register reada,
-						Register readb, Register aux, Imm.Type immDefaultType) {
-		// Since this constructor is only accessed through getInstance, we know all fields are valid
+	/**
+	 * Constructs a new {@code Instruction} object with a immediate value/default type.
+	 *
+	 * @param opcode          the opcode.
+	 * @param write           the write register.
+	 * @param reada           the read A register.
+	 * @param readb           the read B register.
+	 * @param aux             the auxiliary register.
+	 * @param immDefaultType  the default type of the immediate value for this instruction.
+	 */
+	private Instruction(Opcode opcode,
+						Register write,
+						Register reada,
+						Register readb,
+						Register aux,
+						Imm.Type immDefaultType)
+	{
 		this.opcode = opcode;
 		this.write = write;
 		this.reada = reada;
@@ -50,13 +94,21 @@ public class Instruction {
 	}
 
 
+	/**
+	 * Constructs a new instance of the {@code Instruction} class from a string opcode.
+	 *
+	 * @param opcode  the opcode.
+	 *
+	 * @return a new {@code Instruction} object. If the opcode is not recognized, {@code null}
+	 *         is returned.
+	 */
 	public static Instruction getInstance(String opcode) {
-		// Pre-define registers to make switch statement fewer lines
+		// Pre-define registers to make switch cases shorter
 		Register none = new Register(Register.Type.NONE);
 		Register write = new Register(Register.Type.WRITE);
 		Register reada = new Register(Register.Type.READ_A);
 		Register readb = new Register(Register.Type.READ_B);
-		Register readimm = new Register(Register.Type.READ_IMM);
+		Register readi = new Register(Register.Type.READ_IMM);
 		Register readlabel = new Register(Register.Type.LABEL);
 		
 		switch (opcode) {
@@ -73,39 +125,39 @@ public class Instruction {
 		case "sub":
 			return new Instruction(Opcode.SUB, write, reada, readb, none);
 		case "ori":
-			return new Instruction(Opcode.ORI, write, reada, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.ORI, write, reada, none, readi, Imm.Type.HEX);
 		case "andi":
-			return new Instruction(Opcode.ANDI, write, reada, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.ANDI, write, reada, none, readi, Imm.Type.HEX);
 		case "noti":
-			return new Instruction(Opcode.NOTI, write, none, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.NOTI, write, none, none, readi, Imm.Type.HEX);
 		case "cmpi":
-			return new Instruction(Opcode.CMPI, write, reada, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.CMPI, write, reada, none, readi, Imm.Type.HEX);
 		case "addi":
-			return new Instruction(Opcode.ADDI, write, reada, none, readimm, Imm.Type.DEC);
+			return new Instruction(Opcode.ADDI, write, reada, none, readi, Imm.Type.DEC);
 		case "subi":
-			return new Instruction(Opcode.SUBI, write, reada, none, readimm, Imm.Type.DEC);
+			return new Instruction(Opcode.SUBI, write, reada, none, readi, Imm.Type.DEC);
 		case "brz":
 			return new Instruction(Opcode.BRZ, none, none, readb, readlabel);
 		case "bro":
 			return new Instruction(Opcode.BRO, none, none, readb, readlabel);
 		case "mf":
-			return new Instruction(Opcode.MF, write, none, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.MF, write, none, none, readi, Imm.Type.HEX);
 		case "mflo":
-			Instruction mflo = new Instruction(Opcode.MF, write, none, none, readimm, Imm.Type.HEX);
+			Instruction mflo = new Instruction(Opcode.MF, write, none, none, readi, Imm.Type.HEX);
 			mflo.setRegisterValues(new String[] {"0x00", "0x00"});
 			return mflo;
 		case "mfhi":
-			Instruction mfhi = new Instruction(Opcode.MF, write, none, none, readimm, Imm.Type.HEX);
+			Instruction mfhi = new Instruction(Opcode.MF, write, none, none, readi, Imm.Type.HEX);
 			mfhi.setRegisterValues(new String[] {"0x00", "0x01"});
 			return mfhi;
 		case "ld":
-			return new Instruction(Opcode.LD, write, reada, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.LD, write, reada, none, readi, Imm.Type.HEX);
 		case "st":
-			return new Instruction(Opcode.ST, write, reada, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.ST, write, reada, none, readi, Imm.Type.HEX);
 		case "halt":
-			return new Instruction(Opcode.HALT, none, none, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.HALT, none, none, none, readi, Imm.Type.HEX);
 		case "li":
-			return new Instruction(Opcode.ORI, write, none, none, readimm, Imm.Type.HEX);
+			return new Instruction(Opcode.ORI, write, none, none, readi, Imm.Type.HEX);
 		case "mov":
 			return new Instruction(Opcode.ORI, write, reada, none, none);
 		case "nop":
@@ -113,12 +165,20 @@ public class Instruction {
 		case "br":
 			return new Instruction(Opcode.BRZ, none, none, none, readlabel);
 		default:
-			Log.format(Log.ERROR, "Instruction", "unexpected opcode: " + opcode);
+			DataManager.TRACER.addError("unexpected opcode: " + opcode);
 			return null;
 		}
 	}
 
 
+	/**
+	 * Constructs a new instance of the {@code Instruction} class from an integer opcode.
+	 *
+	 * @param opcode  the opcode.
+	 *
+	 * @return a new {@code Instruction} object. If the opcode is not recognized, {@code null}
+	 *         is returned.
+	 */
 	public static Instruction getInstance(int opcode) {
 		// Convert the integer opcode to a string, if able
 		String opcodeStr = null;
@@ -129,11 +189,16 @@ public class Instruction {
 		}
 
 		// Use the existing infrastructure of getInstance(String) to get the Instruction object
-		MCAsm.incrementCurrentToken();
+		DataManager.TRACER.incrementToken();
 		return Instruction.getInstance(opcodeStr);
 	}
 
 
+	/**
+	 * Returns whether this instruction is an immediate instruction.
+	 *
+	 * @return whether this instruction is an immediate instruction.
+	 */
 	public boolean isImmediate() {		
 		for (Register register : this.registers) {
 			if (register.getType() == Register.Type.READ_IMM)
@@ -143,38 +208,54 @@ public class Instruction {
 	}
 
 
+	/**
+	 * Returns the default immediate type for this instruction. If this instruction has no
+	 * immediate value, {@code null} is returned.
+	 *
+	 * @return the default immediate type for this instruction.
+	 */
 	public Imm.Type getImmDefaultType() {
 		return this.immDefaultType;
 	}
 
 
+	/**
+	 * Sets the values of the registers in this instruction from a list of arguments.
+	 * <p>
+	 * If the length of the provided argument list does not match the number of arguments
+	 * expected by this instruction, the routine will exit.
+	 *
+	 * @param args  the values to set.
+	 */
 	public void setRegisterValues(String[] args) {
 		if (args == null) {
-			Log.format(Log.ERROR, "Instruction", "expected non-null argument list");
+			DataManager.TRACER.addError("expected non-null argument list");
 			return;
 		}
 		if (args.length != this.numArgs) {
-			Log.format(Log.ERROR, "Instruction", "actual and formal argument lists differ in length; required " +
-					   this.numArgs + ", found " + args.length);
+			DataManager.TRACER.addError("incorrect number of arguments; required " +
+										this.numArgs + ", found " + args.length);
 			return;
 		}
 
 		int i = 0;
 		for (Register register : this.registers) {
-			if (register.getType() != Register.Type.NONE && i < this.numArgs && i < args.length) {				
-				String value = args[i];
-				if (value == null) {
-					Log.format(Log.ERROR, "Instruction", "expected non-null args, found: " + Arrays.toString(args));
-					return;
-				}
-				
-				register.setValue(value);
-				if (Log.hasNewErrors()) {
-					Log.format(Log.ERROR, "Instruction", "failed to set register value"); // Propogate the error
-					return;
-				}
-				i++;
+			if (register.getType() == Register.Type.NONE ||
+				i >= this.numArgs || i >= args.length)
+				continue;
+
+			String value = args[i];
+			if (value == null) {
+				DataManager.TRACER.addError("invalid null argument: " + Arrays.toString(args));
+				return;
 			}
+			
+			register.setValue(value);
+			if (DataManager.TRACER.hasNewErrors()) {
+				DataManager.TRACER.addError("failed to set register value"); // Propogate the error
+				return;
+			}
+			i++;
 		}
 
 		// Exception for mfhi and mflo. Once the immediate value is set, only 1 argument is excepted
@@ -183,16 +264,21 @@ public class Instruction {
 	}
 
 
+	/**
+	 * Sets the values of the registers in this instruction from a line of machine code.
+	 *
+	 * @param args  the values to set, as an integer that can be parsed.
+	 */
 	public void setRegisterValues(int args) {
-		int writeMask = ((1 << (Lang.WRITE_HIGH - Lang.WRITE_LOW)) - 1) << Lang.WRITE_LOW;
-		int readaMask = ((1 << (Lang.READA_HIGH - Lang.READA_LOW)) - 1) << Lang.READA_LOW;
-		int readbMask = ((1 << (Lang.READB_HIGH - Lang.READB_LOW)) - 1) << Lang.READB_LOW;
-		int auxMask = ((1 << (Lang.IMM_HIGH - Lang.IMM_LOW)) - 1) << Lang.IMM_LOW;
+		int writeMask = ((1 << Language.WRITE_WIDTH) - 1) << Language.WRITE_LOW;
+		int readaMask = ((1 << Language.READA_WIDTH) - 1) << Language.READA_LOW;
+		int readbMask = ((1 << Language.READB_WIDTH) - 1) << Language.READB_LOW;
+		int auxMask = ((1 << Language.IMM_WIDTH) - 1) << Language.IMM_LOW;
 		
-		int write = (args & writeMask) >> Lang.WRITE_LOW;
-		int reada = (args & readaMask) >> Lang.READA_LOW;
-		int readb = (args & readbMask) >> Lang.READB_LOW;
-		int aux = (args & auxMask) >> Lang.IMM_LOW;
+		int write = (args & writeMask) >> Language.WRITE_LOW;
+		int reada = (args & readaMask) >> Language.READA_LOW;
+		int readb = (args & readbMask) >> Language.READB_LOW;
+		int aux = (args & auxMask) >> Language.IMM_LOW;
 
 		int[] argsList = new int[] {write, reada, readb, aux};
 
@@ -206,22 +292,27 @@ public class Instruction {
 	}
 
 
+	/**
+	 * Returns this instruction as an assembled string.
+	 *
+	 * @return this instruction as an assembled string.
+	 */
 	public String toAssembledString() {
 		int bits = 0b00000000000000000000;
-		bits |= this.opcode.toInteger() << Lang.OPCODE_LOW;
+		bits |= this.opcode.toInteger() << Language.OPCODE_LOW;
 
 		for (Register register : this.registers) {
 			String value = register.getValue();
 			if (register.getType() == Register.Type.NONE)
 				continue;
 
-			MCAsm.incrementCurrentToken();
+			DataManager.TRACER.incrementToken();
 
 			int intValue;
-			// Immediate values
-			if (value.matches(Lang.DEC_ARGUMENT_REGEX))
+			// Parse immediate value based on the immediate type
+			if (value.matches(Language.DEC_ARGUMENT_REGEX))
 				intValue = Integer.parseInt(value, 10);
-			else if (value.matches(Lang.HEX_ARGUMENT_REGEX))
+			else if (value.matches(Language.HEX_ARGUMENT_REGEX))
 				intValue = Integer.parseInt(value.substring(2), 16);
 			// Register/label alias values
 			else {
@@ -240,17 +331,27 @@ public class Instruction {
 			}
 
 			switch (register.getType()) {
-			case WRITE           -> bits |= intValue << Lang.WRITE_LOW;
-			case READ_A          -> bits |= intValue << Lang.READA_LOW;
-			case READ_B          -> bits |= intValue << Lang.READB_LOW;
-			case READ_IMM, LABEL -> bits |= intValue << Lang.IMM_LOW;
+			case WRITE           -> bits |= intValue << Language.WRITE_LOW;
+			case READ_A          -> bits |= intValue << Language.READA_LOW;
+			case READ_B          -> bits |= intValue << Language.READB_LOW;
+			case READ_IMM, LABEL -> bits |= intValue << Language.IMM_LOW;
 			}
 		}
 
-		return Log.toHexString(bits, Lang.INSTRUCTION_NIBBLES);
+		return DataManager.toHexString(bits, Language.INSTRUCTION_NIBBLES);
 	}
 
 
+	/**
+	 * Returns a register of this instruction as a assembly code token.
+	 *
+	 * @param register  the register to convert to an assembly token.
+	 * @param immType   the immediate type of this register to use if the register represents an
+	 *                  immediate value.
+	 *
+	 * @return a register of this instruction as a assembly code token. If any error occurs during
+	 *         conversion, {@code null} is returned.
+	 */
 	private String toAssemblyValue(Register register, Imm.Type immType) {
 		Register.Type registerType = register.getType();
 		String registerValue = register.getValue();
@@ -260,7 +361,7 @@ public class Instruction {
 			intValue = Integer.parseInt(registerValue);
 		}
 		catch (NumberFormatException e) {
-			Log.format(Log.ERROR, "Instruction", "unexpected type, cannot parse register value: " + registerValue);
+			DataManager.TRACER.addError("unexpected type, cannot parse register: " + registerValue);
 			return null;
 		}
 		
@@ -271,34 +372,50 @@ public class Instruction {
 			else
 				aliasName = Register.getAliasName(intValue);
 			if (aliasName == null) {
-				Log.format(Log.ERROR, "Instruction",
-						   "unexpected non-immediate argument: " + Log.toHexString(intValue, 1));
+				DataManager.TRACER.addError("unexpected non-immediate argument: " +
+											DataManager.toHexString(intValue, 1));
 				return null;
 			}
 			return aliasName;
 		}
 		else {
 			if (immType == Imm.Type.HEX)
-				return Log.toHexString(intValue, 1);
+				return DataManager.toHexString(intValue, 1);
 			else
 				return Integer.toString(intValue);
 		}
 	}
 
 
+    /**
+	 * Returns this instruction as a line of assembly code with its default immediate type.
+	 *
+	 * @return this instruction as a line of assembly code.
+	 */
 	public String toAssemblyString() {
 		return this.toAssemblyString(Imm.Type.DEFAULT);
 	}
 
 
+	/**
+	 * Returns this instruction as a line of assembly code with the specified immediate type.
+	 *
+	 * @param immType  the immediate numeral base to use if this instruction has an immediate
+	 *                 value.
+	 *
+	 * @return this instruction as a line of assembly code.
+	 */
 	public String toAssemblyString(Imm.Type immType) {
 		// Handle certain exceptions (mostly pseudo ops)
 		switch (this.opcode) {
 		case OR:
 			// NOP -- opcode == OR, all == 0
+			// Determine if this OR instruction is a NOP by checking the register value for zero
 			boolean nop = true;
 			for (Register register : this.registers) {
-				if (register.getType() != Register.Type.NONE && Integer.parseInt(register.getValue()) != 0) {
+				if (register.getType() != Register.Type.NONE &&
+					Integer.parseInt(register.getValue()) != 0)
+				{
 					nop = false;
 					break;
 				}
@@ -308,43 +425,43 @@ public class Instruction {
 			break;
 		case ORI:
 			// LI -- opcode == ORI, reada == 0
-			if (Integer.parseInt(this.reada.getValue()) == 0) {
-				return "li" + Lang.STD_DELIMITER + this.toAssemblyValue(this.write, immType) +
-					Lang.ARG_DELIMITER + Lang.STD_DELIMITER + this.toAssemblyValue(this.aux, immType);
-			}
+			if (Integer.parseInt(this.reada.getValue()) == 0)
+				return "li" + Language.STD_DELIMITER +
+					this.toAssemblyValue(this.write, immType) +
+					Language.ARG_DELIMITER + Language.STD_DELIMITER +
+					this.toAssemblyValue(this.aux, immType);
 			// MOV -- opcode == ORI, imm = 0
-			else if (Integer.parseInt(this.aux.getValue()) == 0) {
-				return "mov" + Lang.STD_DELIMITER + this.toAssemblyValue(this.write, immType) +
-					Lang.ARG_DELIMITER + Lang.STD_DELIMITER + this.toAssemblyValue(this.reada, immType);
-			}
+			else if (Integer.parseInt(this.aux.getValue()) == 0)
+				return "mov" + Language.STD_DELIMITER +
+					this.toAssemblyValue(this.write, immType) +
+					Language.ARG_DELIMITER + Language.STD_DELIMITER +
+					this.toAssemblyValue(this.reada, immType);
 			break;
 		case BRZ:
 			// BR -- opcode == BRZ, readb == 0
-			if (Integer.parseInt(this.readb.getValue()) == 0) {
-				return "br" + Lang.STD_DELIMITER +
+			if (Integer.parseInt(this.readb.getValue()) == 0)
+				return "br" + Language.STD_DELIMITER +
 					this.toAssemblyValue(this.aux, immType);
-			}
 			break;
 		case MF:
 			// MFLO -- opcode == MF, readimm == 0 and MFHI -- opcode == MF, readimm == 1
 			int mfType = Integer.parseInt(this.aux.getValue());
 			switch (mfType) {
 			case 0:
-				return "mflo" + Lang.STD_DELIMITER + this.toAssemblyValue(this.write, immType);
+				return "mflo" + Language.STD_DELIMITER + this.toAssemblyValue(this.write, immType);
 			case 1:
-				return "mfhi" + Lang.STD_DELIMITER + this.toAssemblyValue(this.write, immType);
+				return "mfhi" + Language.STD_DELIMITER + this.toAssemblyValue(this.write, immType);
 			default:
-				Log.format(Log.ERROR, "Instruction", "unexpected type, mf instruction imm value was " +
-						   mfType + ", should be 0 or 1");
+				DataManager.TRACER.addError("unexpected type, mf instruction imm value was " +
+											mfType + ", should be 0 or 1");
 				return null;
 			}
-		// Default case will continue to the remaining sequence to process normal operations
 		}
 		
 
-		// Parse default case for most instructions, if this instruction did not fit any of the exceptions above
-		// Parse instruction
-		String str = this.opcode.toString() + Lang.STD_DELIMITER;
+		// Parse default case for most instructions, if this instruction did not fit any of the
+		// exceptions above
+		String str = this.opcode.toString() + Language.STD_DELIMITER;
 
 		// Handle immediate instructions
 		if (this.isImmediate()) {
@@ -361,7 +478,7 @@ public class Instruction {
 			
 			str += this.toAssemblyValue(register, immType);
 			if (a < this.numArgs - 1)
-				str += Lang.ARG_DELIMITER + Lang.STD_DELIMITER;
+				str += Language.ARG_DELIMITER + Language.STD_DELIMITER;
 			a++;
 		}
 

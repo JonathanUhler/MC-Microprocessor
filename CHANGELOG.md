@@ -6,6 +6,13 @@ All notable changes to any project under MC-Microprocessor should be documented 
 ### Fixed
 ### Changed
 
+## [MC-Assembler 2.2.0] - 2023-11-24
+### Added
+* Add javadoc documentation
+### Fixed
+### Changed
+* Project refactor
+
 ## [PM-Generator 2.2.1] - 1/6/23
 ### Added
 ### Fixed
