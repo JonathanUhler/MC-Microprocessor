@@ -5,40 +5,35 @@ grammar MCMicroprocessor8Bit;
 // P A R S E R   R U L E S
 ////////////////////////////////////////////////////////////////////////////////
 
-program: (statement | func_def)+;
+program: (statement | funcDef)+;
 statement
-    : id_name
-    | expr_var_def
-    | func_call
-    | block_cond
-    | block_for
-    | block_while
-    | /* MARK */;
+    : idName
+    | exprVarDef
+    | funcCall
+    | blockCond
+    | blockFor
+    | blockWhile; /* MARK: add more */
 
-id_name : ID_LETTER (ID_LETTER | ID_DIGIT | '_')*;
+idName : (ID_LETTER | '_') (ID_LETTER | ID_DIGIT | '_')*;
 
-expr_var_def_uint8 : T_UINT8 id_name P_ASSIGN ID_INTEGER;
-expr_var_def_bool  : T_BOOL id_name P_ASSIGN (S_TRUE | S_FALSE);
-expr_var_def       : expr_var_def_uint8 | expr_var_def_bool;
+exprVarDefUint8 : T_UINT8 idName P_ASSIGN ID_INTEGER;
+exprVarDefBool  : T_BOOL idName P_ASSIGN (S_TRUE | S_FALSE);
+exprVarDef       : exprVarDefUint8 | exprVarDefBool;
 
-expr_bool           : /* MARK */;
-expr_assign_literal : /* MARK */;
-expr_assign_mixed   : /* MARK */;
-expr_assign_names   : /* MARK */;
-expr_assign : id_name P_ASSIGN ;
+exprAssign : idName P_ASSIGN; /* MARK: finish this */
 
 body : P_LBRACE statement* P_RBRACE;
 
-func_def  : KW_FUNC id_name P_LPAR P_RPAR body;
-func_call : id_name P_LPAR (id_name | ID_INTEGER | S_TRUE | S_FALSE) P_RPAR;
+funcDef  : KW_FUNC idName P_LPAR P_RPAR body;
+funcCall : idName P_LPAR (idName | ID_INTEGER | S_TRUE | S_FALSE) P_RPAR;
 
-block_if   : KW_IF P_LPAR /* MARK */ P_RPAR body;
-block_elif : KW_ELIF P_LPAR /* MARK */ P_RPAR body;
-block_else : KW_ELSE body;
-block_cond : block_if block_elif* block_else*;
+blockIf   : KW_IF P_LPAR /* MARK: add boolean expression */ P_RPAR body;
+blockElif : KW_ELIF P_LPAR /* MARK: add boolean expression */ P_RPAR body;
+blockElse : KW_ELSE body;
+blockCond : blockIf blockElif* blockElse?;
 
-block_for   : KW_FOR P_LPAR /* MARK */ P_SEMICOLON /* MARK */ P_SEMICOLON /* MARK */ body;
-block_while : KW_WHILE P_LPAR /* MARK */ P_RPAR body;
+blockFor   : KW_FOR P_LPAR /* MARK */ P_SEMICOLON /* MARK */ P_SEMICOLON /* MARK */ body;
+blockWhile : KW_WHILE P_LPAR /* MARK: add boolean expression */ P_RPAR body;
 
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -41,61 +41,61 @@ public class MCMicroprocessor8BitBaseListener implements MCMicroprocessor8BitLis
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterId_name(MCMicroprocessor8BitParser.Id_nameContext ctx) { }
+	@Override public void enterIdName(MCMicroprocessor8BitParser.IdNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitId_name(MCMicroprocessor8BitParser.Id_nameContext ctx) { }
+	@Override public void exitIdName(MCMicroprocessor8BitParser.IdNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpr_var_def_uint8(MCMicroprocessor8BitParser.Expr_var_def_uint8Context ctx) { }
+	@Override public void enterExprVarDefUint8(MCMicroprocessor8BitParser.ExprVarDefUint8Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpr_var_def_uint8(MCMicroprocessor8BitParser.Expr_var_def_uint8Context ctx) { }
+	@Override public void exitExprVarDefUint8(MCMicroprocessor8BitParser.ExprVarDefUint8Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpr_var_def_bool(MCMicroprocessor8BitParser.Expr_var_def_boolContext ctx) { }
+	@Override public void enterExprVarDefBool(MCMicroprocessor8BitParser.ExprVarDefBoolContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpr_var_def_bool(MCMicroprocessor8BitParser.Expr_var_def_boolContext ctx) { }
+	@Override public void exitExprVarDefBool(MCMicroprocessor8BitParser.ExprVarDefBoolContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpr_var_def(MCMicroprocessor8BitParser.Expr_var_defContext ctx) { }
+	@Override public void enterExprVarDef(MCMicroprocessor8BitParser.ExprVarDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpr_var_def(MCMicroprocessor8BitParser.Expr_var_defContext ctx) { }
+	@Override public void exitExprVarDef(MCMicroprocessor8BitParser.ExprVarDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpr_assign(MCMicroprocessor8BitParser.Expr_assignContext ctx) { }
+	@Override public void enterExprAssign(MCMicroprocessor8BitParser.ExprAssignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpr_assign(MCMicroprocessor8BitParser.Expr_assignContext ctx) { }
+	@Override public void exitExprAssign(MCMicroprocessor8BitParser.ExprAssignContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -113,97 +113,97 @@ public class MCMicroprocessor8BitBaseListener implements MCMicroprocessor8BitLis
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunc_def(MCMicroprocessor8BitParser.Func_defContext ctx) { }
+	@Override public void enterFuncDef(MCMicroprocessor8BitParser.FuncDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunc_def(MCMicroprocessor8BitParser.Func_defContext ctx) { }
+	@Override public void exitFuncDef(MCMicroprocessor8BitParser.FuncDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunc_call(MCMicroprocessor8BitParser.Func_callContext ctx) { }
+	@Override public void enterFuncCall(MCMicroprocessor8BitParser.FuncCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunc_call(MCMicroprocessor8BitParser.Func_callContext ctx) { }
+	@Override public void exitFuncCall(MCMicroprocessor8BitParser.FuncCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBlock_if(MCMicroprocessor8BitParser.Block_ifContext ctx) { }
+	@Override public void enterBlockIf(MCMicroprocessor8BitParser.BlockIfContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBlock_if(MCMicroprocessor8BitParser.Block_ifContext ctx) { }
+	@Override public void exitBlockIf(MCMicroprocessor8BitParser.BlockIfContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBlock_elif(MCMicroprocessor8BitParser.Block_elifContext ctx) { }
+	@Override public void enterBlockElif(MCMicroprocessor8BitParser.BlockElifContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBlock_elif(MCMicroprocessor8BitParser.Block_elifContext ctx) { }
+	@Override public void exitBlockElif(MCMicroprocessor8BitParser.BlockElifContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBlock_else(MCMicroprocessor8BitParser.Block_elseContext ctx) { }
+	@Override public void enterBlockElse(MCMicroprocessor8BitParser.BlockElseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBlock_else(MCMicroprocessor8BitParser.Block_elseContext ctx) { }
+	@Override public void exitBlockElse(MCMicroprocessor8BitParser.BlockElseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBlock_cond(MCMicroprocessor8BitParser.Block_condContext ctx) { }
+	@Override public void enterBlockCond(MCMicroprocessor8BitParser.BlockCondContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBlock_cond(MCMicroprocessor8BitParser.Block_condContext ctx) { }
+	@Override public void exitBlockCond(MCMicroprocessor8BitParser.BlockCondContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBlock_for(MCMicroprocessor8BitParser.Block_forContext ctx) { }
+	@Override public void enterBlockFor(MCMicroprocessor8BitParser.BlockForContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBlock_for(MCMicroprocessor8BitParser.Block_forContext ctx) { }
+	@Override public void exitBlockFor(MCMicroprocessor8BitParser.BlockForContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBlock_while(MCMicroprocessor8BitParser.Block_whileContext ctx) { }
+	@Override public void enterBlockWhile(MCMicroprocessor8BitParser.BlockWhileContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBlock_while(MCMicroprocessor8BitParser.Block_whileContext ctx) { }
+	@Override public void exitBlockWhile(MCMicroprocessor8BitParser.BlockWhileContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

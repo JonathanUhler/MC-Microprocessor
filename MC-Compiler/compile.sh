@@ -10,7 +10,10 @@ java -jar src/lib/antlr.jar \
 
 # Setup
 mkdir -p obj
+mkdir -p obj/main
+mkdir -p obj/tests
 rm -rf obj/*
 
 # Compile
-javac -Xlint:all -cp 'src/lib/*' -d obj/ $(find src/main -name '*.java')
+javac -Xlint:all -cp 'src/lib/*' -d obj/main/ $(find src/main -name '*.java')
+javac -Xlint:all -cp '.:src/lib/*:obj/main' -d obj/tests/ $(find src/tests -name '*.java')

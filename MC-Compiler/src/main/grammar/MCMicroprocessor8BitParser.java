@@ -25,16 +25,15 @@ public class MCMicroprocessor8BitParser extends Parser {
 		P_INFIX=35, P_PREFIX=36, ID_WS=37, ID_POS_DIGIT=38, ID_DIGIT=39, ID_LETTER=40, 
 		ID_INTEGER=41;
 	public static final int
-		RULE_program = 0, RULE_statement = 1, RULE_id_name = 2, RULE_expr_var_def_uint8 = 3, 
-		RULE_expr_var_def_bool = 4, RULE_expr_var_def = 5, RULE_expr_assign = 6, 
-		RULE_body = 7, RULE_func_def = 8, RULE_func_call = 9, RULE_block_if = 10, 
-		RULE_block_elif = 11, RULE_block_else = 12, RULE_block_cond = 13, RULE_block_for = 14, 
-		RULE_block_while = 15;
+		RULE_program = 0, RULE_statement = 1, RULE_idName = 2, RULE_exprVarDefUint8 = 3, 
+		RULE_exprVarDefBool = 4, RULE_exprVarDef = 5, RULE_exprAssign = 6, RULE_body = 7, 
+		RULE_funcDef = 8, RULE_funcCall = 9, RULE_blockIf = 10, RULE_blockElif = 11, 
+		RULE_blockElse = 12, RULE_blockCond = 13, RULE_blockFor = 14, RULE_blockWhile = 15;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "statement", "id_name", "expr_var_def_uint8", "expr_var_def_bool", 
-			"expr_var_def", "expr_assign", "body", "func_def", "func_call", "block_if", 
-			"block_elif", "block_else", "block_cond", "block_for", "block_while"
+			"program", "statement", "idName", "exprVarDefUint8", "exprVarDefBool", 
+			"exprVarDef", "exprAssign", "body", "funcDef", "funcCall", "blockIf", 
+			"blockElif", "blockElse", "blockCond", "blockFor", "blockWhile"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -117,11 +116,11 @@ public class MCMicroprocessor8BitParser extends Parser {
 		public StatementContext statement(int i) {
 			return getRuleContext(StatementContext.class,i);
 		}
-		public List<Func_defContext> func_def() {
-			return getRuleContexts(Func_defContext.class);
+		public List<FuncDefContext> funcDef() {
+			return getRuleContexts(FuncDefContext.class);
 		}
-		public Func_defContext func_def(int i) {
-			return getRuleContext(Func_defContext.class,i);
+		public FuncDefContext funcDef(int i) {
+			return getRuleContext(FuncDefContext.class,i);
 		}
 		public ProgramContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -152,6 +151,7 @@ public class MCMicroprocessor8BitParser extends Parser {
 				setState(34);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
+				case T__0:
 				case T_UINT8:
 				case T_BOOL:
 				case KW_IF:
@@ -166,7 +166,7 @@ public class MCMicroprocessor8BitParser extends Parser {
 				case KW_FUNC:
 					{
 					setState(33);
-					func_def();
+					funcDef();
 					}
 					break;
 				default:
@@ -176,7 +176,7 @@ public class MCMicroprocessor8BitParser extends Parser {
 				setState(36); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 1099511631052L) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 1099511631054L) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -192,23 +192,23 @@ public class MCMicroprocessor8BitParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class StatementContext extends ParserRuleContext {
-		public Id_nameContext id_name() {
-			return getRuleContext(Id_nameContext.class,0);
+		public IdNameContext idName() {
+			return getRuleContext(IdNameContext.class,0);
 		}
-		public Expr_var_defContext expr_var_def() {
-			return getRuleContext(Expr_var_defContext.class,0);
+		public ExprVarDefContext exprVarDef() {
+			return getRuleContext(ExprVarDefContext.class,0);
 		}
-		public Func_callContext func_call() {
-			return getRuleContext(Func_callContext.class,0);
+		public FuncCallContext funcCall() {
+			return getRuleContext(FuncCallContext.class,0);
 		}
-		public Block_condContext block_cond() {
-			return getRuleContext(Block_condContext.class,0);
+		public BlockCondContext blockCond() {
+			return getRuleContext(BlockCondContext.class,0);
 		}
-		public Block_forContext block_for() {
-			return getRuleContext(Block_forContext.class,0);
+		public BlockForContext blockFor() {
+			return getRuleContext(BlockForContext.class,0);
 		}
-		public Block_whileContext block_while() {
-			return getRuleContext(Block_whileContext.class,0);
+		public BlockWhileContext blockWhile() {
+			return getRuleContext(BlockWhileContext.class,0);
 		}
 		public StatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -235,42 +235,42 @@ public class MCMicroprocessor8BitParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(38);
-				id_name();
+				idName();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(39);
-				expr_var_def();
+				exprVarDef();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(40);
-				func_call();
+				funcCall();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(41);
-				block_cond();
+				blockCond();
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(42);
-				block_for();
+				blockFor();
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(43);
-				block_while();
+				blockWhile();
 				}
 				break;
 			}
@@ -287,7 +287,7 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Id_nameContext extends ParserRuleContext {
+	public static class IdNameContext extends ParserRuleContext {
 		public List<TerminalNode> ID_LETTER() { return getTokens(MCMicroprocessor8BitParser.ID_LETTER); }
 		public TerminalNode ID_LETTER(int i) {
 			return getToken(MCMicroprocessor8BitParser.ID_LETTER, i);
@@ -296,30 +296,38 @@ public class MCMicroprocessor8BitParser extends Parser {
 		public TerminalNode ID_DIGIT(int i) {
 			return getToken(MCMicroprocessor8BitParser.ID_DIGIT, i);
 		}
-		public Id_nameContext(ParserRuleContext parent, int invokingState) {
+		public IdNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_id_name; }
+		@Override public int getRuleIndex() { return RULE_idName; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterId_name(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterIdName(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitId_name(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitIdName(this);
 		}
 	}
 
-	public final Id_nameContext id_name() throws RecognitionException {
-		Id_nameContext _localctx = new Id_nameContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_id_name);
+	public final IdNameContext idName() throws RecognitionException {
+		IdNameContext _localctx = new IdNameContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_idName);
 		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(46);
-			match(ID_LETTER);
+			_la = _input.LA(1);
+			if ( !(_la==T__0 || _la==ID_LETTER) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
 			setState(50);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
@@ -358,37 +366,37 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Expr_var_def_uint8Context extends ParserRuleContext {
+	public static class ExprVarDefUint8Context extends ParserRuleContext {
 		public TerminalNode T_UINT8() { return getToken(MCMicroprocessor8BitParser.T_UINT8, 0); }
-		public Id_nameContext id_name() {
-			return getRuleContext(Id_nameContext.class,0);
+		public IdNameContext idName() {
+			return getRuleContext(IdNameContext.class,0);
 		}
 		public TerminalNode P_ASSIGN() { return getToken(MCMicroprocessor8BitParser.P_ASSIGN, 0); }
 		public TerminalNode ID_INTEGER() { return getToken(MCMicroprocessor8BitParser.ID_INTEGER, 0); }
-		public Expr_var_def_uint8Context(ParserRuleContext parent, int invokingState) {
+		public ExprVarDefUint8Context(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_expr_var_def_uint8; }
+		@Override public int getRuleIndex() { return RULE_exprVarDefUint8; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterExpr_var_def_uint8(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterExprVarDefUint8(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitExpr_var_def_uint8(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitExprVarDefUint8(this);
 		}
 	}
 
-	public final Expr_var_def_uint8Context expr_var_def_uint8() throws RecognitionException {
-		Expr_var_def_uint8Context _localctx = new Expr_var_def_uint8Context(_ctx, getState());
-		enterRule(_localctx, 6, RULE_expr_var_def_uint8);
+	public final ExprVarDefUint8Context exprVarDefUint8() throws RecognitionException {
+		ExprVarDefUint8Context _localctx = new ExprVarDefUint8Context(_ctx, getState());
+		enterRule(_localctx, 6, RULE_exprVarDefUint8);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(53);
 			match(T_UINT8);
 			setState(54);
-			id_name();
+			idName();
 			setState(55);
 			match(P_ASSIGN);
 			setState(56);
@@ -407,31 +415,31 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Expr_var_def_boolContext extends ParserRuleContext {
+	public static class ExprVarDefBoolContext extends ParserRuleContext {
 		public TerminalNode T_BOOL() { return getToken(MCMicroprocessor8BitParser.T_BOOL, 0); }
-		public Id_nameContext id_name() {
-			return getRuleContext(Id_nameContext.class,0);
+		public IdNameContext idName() {
+			return getRuleContext(IdNameContext.class,0);
 		}
 		public TerminalNode P_ASSIGN() { return getToken(MCMicroprocessor8BitParser.P_ASSIGN, 0); }
 		public TerminalNode S_TRUE() { return getToken(MCMicroprocessor8BitParser.S_TRUE, 0); }
 		public TerminalNode S_FALSE() { return getToken(MCMicroprocessor8BitParser.S_FALSE, 0); }
-		public Expr_var_def_boolContext(ParserRuleContext parent, int invokingState) {
+		public ExprVarDefBoolContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_expr_var_def_bool; }
+		@Override public int getRuleIndex() { return RULE_exprVarDefBool; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterExpr_var_def_bool(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterExprVarDefBool(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitExpr_var_def_bool(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitExprVarDefBool(this);
 		}
 	}
 
-	public final Expr_var_def_boolContext expr_var_def_bool() throws RecognitionException {
-		Expr_var_def_boolContext _localctx = new Expr_var_def_boolContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_expr_var_def_bool);
+	public final ExprVarDefBoolContext exprVarDefBool() throws RecognitionException {
+		ExprVarDefBoolContext _localctx = new ExprVarDefBoolContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_exprVarDefBool);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -439,7 +447,7 @@ public class MCMicroprocessor8BitParser extends Parser {
 			setState(58);
 			match(T_BOOL);
 			setState(59);
-			id_name();
+			idName();
 			setState(60);
 			match(P_ASSIGN);
 			setState(61);
@@ -466,30 +474,30 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Expr_var_defContext extends ParserRuleContext {
-		public Expr_var_def_uint8Context expr_var_def_uint8() {
-			return getRuleContext(Expr_var_def_uint8Context.class,0);
+	public static class ExprVarDefContext extends ParserRuleContext {
+		public ExprVarDefUint8Context exprVarDefUint8() {
+			return getRuleContext(ExprVarDefUint8Context.class,0);
 		}
-		public Expr_var_def_boolContext expr_var_def_bool() {
-			return getRuleContext(Expr_var_def_boolContext.class,0);
+		public ExprVarDefBoolContext exprVarDefBool() {
+			return getRuleContext(ExprVarDefBoolContext.class,0);
 		}
-		public Expr_var_defContext(ParserRuleContext parent, int invokingState) {
+		public ExprVarDefContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_expr_var_def; }
+		@Override public int getRuleIndex() { return RULE_exprVarDef; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterExpr_var_def(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterExprVarDef(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitExpr_var_def(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitExprVarDef(this);
 		}
 	}
 
-	public final Expr_var_defContext expr_var_def() throws RecognitionException {
-		Expr_var_defContext _localctx = new Expr_var_defContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_expr_var_def);
+	public final ExprVarDefContext exprVarDef() throws RecognitionException {
+		ExprVarDefContext _localctx = new ExprVarDefContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_exprVarDef);
 		try {
 			setState(65);
 			_errHandler.sync(this);
@@ -498,14 +506,14 @@ public class MCMicroprocessor8BitParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(63);
-				expr_var_def_uint8();
+				exprVarDefUint8();
 				}
 				break;
 			case T_BOOL:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(64);
-				expr_var_def_bool();
+				exprVarDefBool();
 				}
 				break;
 			default:
@@ -524,32 +532,35 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Expr_assignContext extends ParserRuleContext {
-		public Id_nameContext id_name() {
-			return getRuleContext(Id_nameContext.class,0);
+	public static class ExprAssignContext extends ParserRuleContext {
+		public IdNameContext idName() {
+			return getRuleContext(IdNameContext.class,0);
 		}
-		public Expr_assignContext(ParserRuleContext parent, int invokingState) {
+		public TerminalNode P_ASSIGN() { return getToken(MCMicroprocessor8BitParser.P_ASSIGN, 0); }
+		public ExprAssignContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_expr_assign; }
+		@Override public int getRuleIndex() { return RULE_exprAssign; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterExpr_assign(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterExprAssign(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitExpr_assign(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitExprAssign(this);
 		}
 	}
 
-	public final Expr_assignContext expr_assign() throws RecognitionException {
-		Expr_assignContext _localctx = new Expr_assignContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_expr_assign);
+	public final ExprAssignContext exprAssign() throws RecognitionException {
+		ExprAssignContext _localctx = new ExprAssignContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_exprAssign);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(67);
-			id_name();
+			idName();
+			setState(68);
+			match(P_ASSIGN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -594,23 +605,23 @@ public class MCMicroprocessor8BitParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(69);
+			setState(70);
 			match(P_LBRACE);
-			setState(73);
+			setState(74);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1099511630988L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1099511630990L) != 0)) {
 				{
 				{
-				setState(70);
+				setState(71);
 				statement();
 				}
 				}
-				setState(75);
+				setState(76);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(76);
+			setState(77);
 			match(P_RBRACE);
 			}
 		}
@@ -626,45 +637,45 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Func_defContext extends ParserRuleContext {
+	public static class FuncDefContext extends ParserRuleContext {
 		public TerminalNode KW_FUNC() { return getToken(MCMicroprocessor8BitParser.KW_FUNC, 0); }
-		public Id_nameContext id_name() {
-			return getRuleContext(Id_nameContext.class,0);
+		public IdNameContext idName() {
+			return getRuleContext(IdNameContext.class,0);
 		}
 		public TerminalNode P_LPAR() { return getToken(MCMicroprocessor8BitParser.P_LPAR, 0); }
 		public TerminalNode P_RPAR() { return getToken(MCMicroprocessor8BitParser.P_RPAR, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public Func_defContext(ParserRuleContext parent, int invokingState) {
+		public FuncDefContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_func_def; }
+		@Override public int getRuleIndex() { return RULE_funcDef; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterFunc_def(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterFuncDef(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitFunc_def(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitFuncDef(this);
 		}
 	}
 
-	public final Func_defContext func_def() throws RecognitionException {
-		Func_defContext _localctx = new Func_defContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_func_def);
+	public final FuncDefContext funcDef() throws RecognitionException {
+		FuncDefContext _localctx = new FuncDefContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_funcDef);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(78);
-			match(KW_FUNC);
 			setState(79);
-			id_name();
+			match(KW_FUNC);
 			setState(80);
-			match(P_LPAR);
+			idName();
 			setState(81);
-			match(P_RPAR);
+			match(P_LPAR);
 			setState(82);
+			match(P_RPAR);
+			setState(83);
 			body();
 			}
 		}
@@ -680,73 +691,74 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Func_callContext extends ParserRuleContext {
-		public List<Id_nameContext> id_name() {
-			return getRuleContexts(Id_nameContext.class);
+	public static class FuncCallContext extends ParserRuleContext {
+		public List<IdNameContext> idName() {
+			return getRuleContexts(IdNameContext.class);
 		}
-		public Id_nameContext id_name(int i) {
-			return getRuleContext(Id_nameContext.class,i);
+		public IdNameContext idName(int i) {
+			return getRuleContext(IdNameContext.class,i);
 		}
 		public TerminalNode P_LPAR() { return getToken(MCMicroprocessor8BitParser.P_LPAR, 0); }
 		public TerminalNode P_RPAR() { return getToken(MCMicroprocessor8BitParser.P_RPAR, 0); }
 		public TerminalNode ID_INTEGER() { return getToken(MCMicroprocessor8BitParser.ID_INTEGER, 0); }
 		public TerminalNode S_TRUE() { return getToken(MCMicroprocessor8BitParser.S_TRUE, 0); }
 		public TerminalNode S_FALSE() { return getToken(MCMicroprocessor8BitParser.S_FALSE, 0); }
-		public Func_callContext(ParserRuleContext parent, int invokingState) {
+		public FuncCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_func_call; }
+		@Override public int getRuleIndex() { return RULE_funcCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterFunc_call(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterFuncCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitFunc_call(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitFuncCall(this);
 		}
 	}
 
-	public final Func_callContext func_call() throws RecognitionException {
-		Func_callContext _localctx = new Func_callContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_func_call);
+	public final FuncCallContext funcCall() throws RecognitionException {
+		FuncCallContext _localctx = new FuncCallContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_funcCall);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(84);
-			id_name();
 			setState(85);
+			idName();
+			setState(86);
 			match(P_LPAR);
-			setState(90);
+			setState(91);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
+			case T__0:
 			case ID_LETTER:
 				{
-				setState(86);
-				id_name();
+				setState(87);
+				idName();
 				}
 				break;
 			case ID_INTEGER:
 				{
-				setState(87);
+				setState(88);
 				match(ID_INTEGER);
 				}
 				break;
 			case S_TRUE:
 				{
-				setState(88);
+				setState(89);
 				match(S_TRUE);
 				}
 				break;
 			case S_FALSE:
 				{
-				setState(89);
+				setState(90);
 				match(S_FALSE);
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(92);
+			setState(93);
 			match(P_RPAR);
 			}
 		}
@@ -762,40 +774,40 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Block_ifContext extends ParserRuleContext {
+	public static class BlockIfContext extends ParserRuleContext {
 		public TerminalNode KW_IF() { return getToken(MCMicroprocessor8BitParser.KW_IF, 0); }
 		public TerminalNode P_LPAR() { return getToken(MCMicroprocessor8BitParser.P_LPAR, 0); }
 		public TerminalNode P_RPAR() { return getToken(MCMicroprocessor8BitParser.P_RPAR, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public Block_ifContext(ParserRuleContext parent, int invokingState) {
+		public BlockIfContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_block_if; }
+		@Override public int getRuleIndex() { return RULE_blockIf; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlock_if(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlockIf(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlock_if(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlockIf(this);
 		}
 	}
 
-	public final Block_ifContext block_if() throws RecognitionException {
-		Block_ifContext _localctx = new Block_ifContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_block_if);
+	public final BlockIfContext blockIf() throws RecognitionException {
+		BlockIfContext _localctx = new BlockIfContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_blockIf);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(94);
-			match(KW_IF);
 			setState(95);
-			match(P_LPAR);
+			match(KW_IF);
 			setState(96);
-			match(P_RPAR);
+			match(P_LPAR);
 			setState(97);
+			match(P_RPAR);
+			setState(98);
 			body();
 			}
 		}
@@ -811,40 +823,40 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Block_elifContext extends ParserRuleContext {
+	public static class BlockElifContext extends ParserRuleContext {
 		public TerminalNode KW_ELIF() { return getToken(MCMicroprocessor8BitParser.KW_ELIF, 0); }
 		public TerminalNode P_LPAR() { return getToken(MCMicroprocessor8BitParser.P_LPAR, 0); }
 		public TerminalNode P_RPAR() { return getToken(MCMicroprocessor8BitParser.P_RPAR, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public Block_elifContext(ParserRuleContext parent, int invokingState) {
+		public BlockElifContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_block_elif; }
+		@Override public int getRuleIndex() { return RULE_blockElif; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlock_elif(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlockElif(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlock_elif(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlockElif(this);
 		}
 	}
 
-	public final Block_elifContext block_elif() throws RecognitionException {
-		Block_elifContext _localctx = new Block_elifContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_block_elif);
+	public final BlockElifContext blockElif() throws RecognitionException {
+		BlockElifContext _localctx = new BlockElifContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_blockElif);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(99);
-			match(KW_ELIF);
 			setState(100);
-			match(P_LPAR);
+			match(KW_ELIF);
 			setState(101);
-			match(P_RPAR);
+			match(P_LPAR);
 			setState(102);
+			match(P_RPAR);
+			setState(103);
 			body();
 			}
 		}
@@ -860,34 +872,34 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Block_elseContext extends ParserRuleContext {
+	public static class BlockElseContext extends ParserRuleContext {
 		public TerminalNode KW_ELSE() { return getToken(MCMicroprocessor8BitParser.KW_ELSE, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public Block_elseContext(ParserRuleContext parent, int invokingState) {
+		public BlockElseContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_block_else; }
+		@Override public int getRuleIndex() { return RULE_blockElse; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlock_else(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlockElse(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlock_else(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlockElse(this);
 		}
 	}
 
-	public final Block_elseContext block_else() throws RecognitionException {
-		Block_elseContext _localctx = new Block_elseContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_block_else);
+	public final BlockElseContext blockElse() throws RecognitionException {
+		BlockElseContext _localctx = new BlockElseContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_blockElse);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(104);
-			match(KW_ELSE);
 			setState(105);
+			match(KW_ELSE);
+			setState(106);
 			body();
 			}
 		}
@@ -903,73 +915,66 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Block_condContext extends ParserRuleContext {
-		public Block_ifContext block_if() {
-			return getRuleContext(Block_ifContext.class,0);
+	public static class BlockCondContext extends ParserRuleContext {
+		public BlockIfContext blockIf() {
+			return getRuleContext(BlockIfContext.class,0);
 		}
-		public List<Block_elifContext> block_elif() {
-			return getRuleContexts(Block_elifContext.class);
+		public List<BlockElifContext> blockElif() {
+			return getRuleContexts(BlockElifContext.class);
 		}
-		public Block_elifContext block_elif(int i) {
-			return getRuleContext(Block_elifContext.class,i);
+		public BlockElifContext blockElif(int i) {
+			return getRuleContext(BlockElifContext.class,i);
 		}
-		public List<Block_elseContext> block_else() {
-			return getRuleContexts(Block_elseContext.class);
+		public BlockElseContext blockElse() {
+			return getRuleContext(BlockElseContext.class,0);
 		}
-		public Block_elseContext block_else(int i) {
-			return getRuleContext(Block_elseContext.class,i);
-		}
-		public Block_condContext(ParserRuleContext parent, int invokingState) {
+		public BlockCondContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_block_cond; }
+		@Override public int getRuleIndex() { return RULE_blockCond; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlock_cond(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlockCond(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlock_cond(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlockCond(this);
 		}
 	}
 
-	public final Block_condContext block_cond() throws RecognitionException {
-		Block_condContext _localctx = new Block_condContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_block_cond);
+	public final BlockCondContext blockCond() throws RecognitionException {
+		BlockCondContext _localctx = new BlockCondContext(_ctx, getState());
+		enterRule(_localctx, 26, RULE_blockCond);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(107);
-			block_if();
-			setState(111);
+			setState(108);
+			blockIf();
+			setState(112);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==KW_ELIF) {
 				{
 				{
-				setState(108);
-				block_elif();
+				setState(109);
+				blockElif();
 				}
 				}
-				setState(113);
+				setState(114);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(117);
+			setState(116);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==KW_ELSE) {
+			if (_la==KW_ELSE) {
 				{
-				{
-				setState(114);
-				block_else();
+				setState(115);
+				blockElse();
 				}
-				}
-				setState(119);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -984,7 +989,7 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Block_forContext extends ParserRuleContext {
+	public static class BlockForContext extends ParserRuleContext {
 		public TerminalNode KW_FOR() { return getToken(MCMicroprocessor8BitParser.KW_FOR, 0); }
 		public TerminalNode P_LPAR() { return getToken(MCMicroprocessor8BitParser.P_LPAR, 0); }
 		public List<TerminalNode> P_SEMICOLON() { return getTokens(MCMicroprocessor8BitParser.P_SEMICOLON); }
@@ -994,35 +999,35 @@ public class MCMicroprocessor8BitParser extends Parser {
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public Block_forContext(ParserRuleContext parent, int invokingState) {
+		public BlockForContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_block_for; }
+		@Override public int getRuleIndex() { return RULE_blockFor; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlock_for(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlockFor(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlock_for(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlockFor(this);
 		}
 	}
 
-	public final Block_forContext block_for() throws RecognitionException {
-		Block_forContext _localctx = new Block_forContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_block_for);
+	public final BlockForContext blockFor() throws RecognitionException {
+		BlockForContext _localctx = new BlockForContext(_ctx, getState());
+		enterRule(_localctx, 28, RULE_blockFor);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(120);
+			setState(118);
 			match(KW_FOR);
-			setState(121);
+			setState(119);
 			match(P_LPAR);
+			setState(120);
+			match(P_SEMICOLON);
+			setState(121);
+			match(P_SEMICOLON);
 			setState(122);
-			match(P_SEMICOLON);
-			setState(123);
-			match(P_SEMICOLON);
-			setState(124);
 			body();
 			}
 		}
@@ -1038,40 +1043,40 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class Block_whileContext extends ParserRuleContext {
+	public static class BlockWhileContext extends ParserRuleContext {
 		public TerminalNode KW_WHILE() { return getToken(MCMicroprocessor8BitParser.KW_WHILE, 0); }
 		public TerminalNode P_LPAR() { return getToken(MCMicroprocessor8BitParser.P_LPAR, 0); }
 		public TerminalNode P_RPAR() { return getToken(MCMicroprocessor8BitParser.P_RPAR, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public Block_whileContext(ParserRuleContext parent, int invokingState) {
+		public BlockWhileContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_block_while; }
+		@Override public int getRuleIndex() { return RULE_blockWhile; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlock_while(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).enterBlockWhile(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlock_while(this);
+			if ( listener instanceof MCMicroprocessor8BitListener ) ((MCMicroprocessor8BitListener)listener).exitBlockWhile(this);
 		}
 	}
 
-	public final Block_whileContext block_while() throws RecognitionException {
-		Block_whileContext _localctx = new Block_whileContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_block_while);
+	public final BlockWhileContext blockWhile() throws RecognitionException {
+		BlockWhileContext _localctx = new BlockWhileContext(_ctx, getState());
+		enterRule(_localctx, 30, RULE_blockWhile);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(126);
+			setState(124);
 			match(KW_WHILE);
-			setState(127);
+			setState(125);
 			match(P_LPAR);
-			setState(128);
+			setState(126);
 			match(P_RPAR);
-			setState(129);
+			setState(127);
 			body();
 			}
 		}
@@ -1087,7 +1092,7 @@ public class MCMicroprocessor8BitParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001)\u0084\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001)\u0082\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
@@ -1098,66 +1103,65 @@ public class MCMicroprocessor8BitParser extends Parser {
 		"\u00024\t\u0002\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001"+
 		"\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001"+
 		"\u0005\u0001\u0005\u0003\u0005B\b\u0005\u0001\u0006\u0001\u0006\u0001"+
-		"\u0007\u0001\u0007\u0005\u0007H\b\u0007\n\u0007\f\u0007K\t\u0007\u0001"+
-		"\u0007\u0001\u0007\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001"+
-		"\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0003\t[\b\t\u0001\t\u0001"+
-		"\t\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\u000b\u0001\u000b\u0001"+
-		"\u000b\u0001\u000b\u0001\u000b\u0001\f\u0001\f\u0001\f\u0001\r\u0001\r"+
-		"\u0005\rn\b\r\n\r\f\rq\t\r\u0001\r\u0005\rt\b\r\n\r\f\rw\t\r\u0001\u000e"+
+		"\u0006\u0001\u0007\u0001\u0007\u0005\u0007I\b\u0007\n\u0007\f\u0007L\t"+
+		"\u0007\u0001\u0007\u0001\u0007\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b"+
+		"\u0001\b\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0003\t\\\b\t"+
+		"\u0001\t\u0001\t\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\u000b\u0001"+
+		"\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001\f\u0001\f\u0001\f\u0001"+
+		"\r\u0001\r\u0005\ro\b\r\n\r\f\rr\t\r\u0001\r\u0003\ru\b\r\u0001\u000e"+
 		"\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000e\u0001\u000f"+
 		"\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0000\u0000"+
 		"\u0010\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018"+
-		"\u001a\u001c\u001e\u0000\u0002\u0002\u0000\u0001\u0001\'(\u0001\u0000"+
-		"\u0004\u0005\u0082\u0000\"\u0001\u0000\u0000\u0000\u0002,\u0001\u0000"+
-		"\u0000\u0000\u0004.\u0001\u0000\u0000\u0000\u00065\u0001\u0000\u0000\u0000"+
-		"\b:\u0001\u0000\u0000\u0000\nA\u0001\u0000\u0000\u0000\fC\u0001\u0000"+
-		"\u0000\u0000\u000eE\u0001\u0000\u0000\u0000\u0010N\u0001\u0000\u0000\u0000"+
-		"\u0012T\u0001\u0000\u0000\u0000\u0014^\u0001\u0000\u0000\u0000\u0016c"+
-		"\u0001\u0000\u0000\u0000\u0018h\u0001\u0000\u0000\u0000\u001ak\u0001\u0000"+
-		"\u0000\u0000\u001cx\u0001\u0000\u0000\u0000\u001e~\u0001\u0000\u0000\u0000"+
-		" #\u0003\u0002\u0001\u0000!#\u0003\u0010\b\u0000\" \u0001\u0000\u0000"+
-		"\u0000\"!\u0001\u0000\u0000\u0000#$\u0001\u0000\u0000\u0000$\"\u0001\u0000"+
-		"\u0000\u0000$%\u0001\u0000\u0000\u0000%\u0001\u0001\u0000\u0000\u0000"+
-		"&-\u0003\u0004\u0002\u0000\'-\u0003\n\u0005\u0000(-\u0003\u0012\t\u0000"+
-		")-\u0003\u001a\r\u0000*-\u0003\u001c\u000e\u0000+-\u0003\u001e\u000f\u0000"+
-		",&\u0001\u0000\u0000\u0000,\'\u0001\u0000\u0000\u0000,(\u0001\u0000\u0000"+
-		"\u0000,)\u0001\u0000\u0000\u0000,*\u0001\u0000\u0000\u0000,+\u0001\u0000"+
-		"\u0000\u0000-\u0003\u0001\u0000\u0000\u0000.2\u0005(\u0000\u0000/1\u0007"+
-		"\u0000\u0000\u00000/\u0001\u0000\u0000\u000014\u0001\u0000\u0000\u0000"+
-		"20\u0001\u0000\u0000\u000023\u0001\u0000\u0000\u00003\u0005\u0001\u0000"+
-		"\u0000\u000042\u0001\u0000\u0000\u000056\u0005\u0002\u0000\u000067\u0003"+
-		"\u0004\u0002\u000078\u0005\u0010\u0000\u000089\u0005)\u0000\u00009\u0007"+
-		"\u0001\u0000\u0000\u0000:;\u0005\u0003\u0000\u0000;<\u0003\u0004\u0002"+
-		"\u0000<=\u0005\u0010\u0000\u0000=>\u0007\u0001\u0000\u0000>\t\u0001\u0000"+
-		"\u0000\u0000?B\u0003\u0006\u0003\u0000@B\u0003\b\u0004\u0000A?\u0001\u0000"+
-		"\u0000\u0000A@\u0001\u0000\u0000\u0000B\u000b\u0001\u0000\u0000\u0000"+
-		"CD\u0003\u0004\u0002\u0000D\r\u0001\u0000\u0000\u0000EI\u0005\u001f\u0000"+
-		"\u0000FH\u0003\u0002\u0001\u0000GF\u0001\u0000\u0000\u0000HK\u0001\u0000"+
-		"\u0000\u0000IG\u0001\u0000\u0000\u0000IJ\u0001\u0000\u0000\u0000JL\u0001"+
-		"\u0000\u0000\u0000KI\u0001\u0000\u0000\u0000LM\u0005 \u0000\u0000M\u000f"+
-		"\u0001\u0000\u0000\u0000NO\u0005\u0006\u0000\u0000OP\u0003\u0004\u0002"+
-		"\u0000PQ\u0005\u001d\u0000\u0000QR\u0005\u001e\u0000\u0000RS\u0003\u000e"+
-		"\u0007\u0000S\u0011\u0001\u0000\u0000\u0000TU\u0003\u0004\u0002\u0000"+
-		"UZ\u0005\u001d\u0000\u0000V[\u0003\u0004\u0002\u0000W[\u0005)\u0000\u0000"+
-		"X[\u0005\u0004\u0000\u0000Y[\u0005\u0005\u0000\u0000ZV\u0001\u0000\u0000"+
-		"\u0000ZW\u0001\u0000\u0000\u0000ZX\u0001\u0000\u0000\u0000ZY\u0001\u0000"+
-		"\u0000\u0000[\\\u0001\u0000\u0000\u0000\\]\u0005\u001e\u0000\u0000]\u0013"+
-		"\u0001\u0000\u0000\u0000^_\u0005\u0007\u0000\u0000_`\u0005\u001d\u0000"+
-		"\u0000`a\u0005\u001e\u0000\u0000ab\u0003\u000e\u0007\u0000b\u0015\u0001"+
-		"\u0000\u0000\u0000cd\u0005\b\u0000\u0000de\u0005\u001d\u0000\u0000ef\u0005"+
-		"\u001e\u0000\u0000fg\u0003\u000e\u0007\u0000g\u0017\u0001\u0000\u0000"+
-		"\u0000hi\u0005\t\u0000\u0000ij\u0003\u000e\u0007\u0000j\u0019\u0001\u0000"+
-		"\u0000\u0000ko\u0003\u0014\n\u0000ln\u0003\u0016\u000b\u0000ml\u0001\u0000"+
-		"\u0000\u0000nq\u0001\u0000\u0000\u0000om\u0001\u0000\u0000\u0000op\u0001"+
-		"\u0000\u0000\u0000pu\u0001\u0000\u0000\u0000qo\u0001\u0000\u0000\u0000"+
-		"rt\u0003\u0018\f\u0000sr\u0001\u0000\u0000\u0000tw\u0001\u0000\u0000\u0000"+
-		"us\u0001\u0000\u0000\u0000uv\u0001\u0000\u0000\u0000v\u001b\u0001\u0000"+
-		"\u0000\u0000wu\u0001\u0000\u0000\u0000xy\u0005\n\u0000\u0000yz\u0005\u001d"+
-		"\u0000\u0000z{\u0005!\u0000\u0000{|\u0005!\u0000\u0000|}\u0003\u000e\u0007"+
-		"\u0000}\u001d\u0001\u0000\u0000\u0000~\u007f\u0005\u000b\u0000\u0000\u007f"+
-		"\u0080\u0005\u001d\u0000\u0000\u0080\u0081\u0005\u001e\u0000\u0000\u0081"+
-		"\u0082\u0003\u000e\u0007\u0000\u0082\u001f\u0001\u0000\u0000\u0000\t\""+
-		"$,2AIZou";
+		"\u001a\u001c\u001e\u0000\u0003\u0002\u0000\u0001\u0001((\u0002\u0000\u0001"+
+		"\u0001\'(\u0001\u0000\u0004\u0005\u0080\u0000\"\u0001\u0000\u0000\u0000"+
+		"\u0002,\u0001\u0000\u0000\u0000\u0004.\u0001\u0000\u0000\u0000\u00065"+
+		"\u0001\u0000\u0000\u0000\b:\u0001\u0000\u0000\u0000\nA\u0001\u0000\u0000"+
+		"\u0000\fC\u0001\u0000\u0000\u0000\u000eF\u0001\u0000\u0000\u0000\u0010"+
+		"O\u0001\u0000\u0000\u0000\u0012U\u0001\u0000\u0000\u0000\u0014_\u0001"+
+		"\u0000\u0000\u0000\u0016d\u0001\u0000\u0000\u0000\u0018i\u0001\u0000\u0000"+
+		"\u0000\u001al\u0001\u0000\u0000\u0000\u001cv\u0001\u0000\u0000\u0000\u001e"+
+		"|\u0001\u0000\u0000\u0000 #\u0003\u0002\u0001\u0000!#\u0003\u0010\b\u0000"+
+		"\" \u0001\u0000\u0000\u0000\"!\u0001\u0000\u0000\u0000#$\u0001\u0000\u0000"+
+		"\u0000$\"\u0001\u0000\u0000\u0000$%\u0001\u0000\u0000\u0000%\u0001\u0001"+
+		"\u0000\u0000\u0000&-\u0003\u0004\u0002\u0000\'-\u0003\n\u0005\u0000(-"+
+		"\u0003\u0012\t\u0000)-\u0003\u001a\r\u0000*-\u0003\u001c\u000e\u0000+"+
+		"-\u0003\u001e\u000f\u0000,&\u0001\u0000\u0000\u0000,\'\u0001\u0000\u0000"+
+		"\u0000,(\u0001\u0000\u0000\u0000,)\u0001\u0000\u0000\u0000,*\u0001\u0000"+
+		"\u0000\u0000,+\u0001\u0000\u0000\u0000-\u0003\u0001\u0000\u0000\u0000"+
+		".2\u0007\u0000\u0000\u0000/1\u0007\u0001\u0000\u00000/\u0001\u0000\u0000"+
+		"\u000014\u0001\u0000\u0000\u000020\u0001\u0000\u0000\u000023\u0001\u0000"+
+		"\u0000\u00003\u0005\u0001\u0000\u0000\u000042\u0001\u0000\u0000\u0000"+
+		"56\u0005\u0002\u0000\u000067\u0003\u0004\u0002\u000078\u0005\u0010\u0000"+
+		"\u000089\u0005)\u0000\u00009\u0007\u0001\u0000\u0000\u0000:;\u0005\u0003"+
+		"\u0000\u0000;<\u0003\u0004\u0002\u0000<=\u0005\u0010\u0000\u0000=>\u0007"+
+		"\u0002\u0000\u0000>\t\u0001\u0000\u0000\u0000?B\u0003\u0006\u0003\u0000"+
+		"@B\u0003\b\u0004\u0000A?\u0001\u0000\u0000\u0000A@\u0001\u0000\u0000\u0000"+
+		"B\u000b\u0001\u0000\u0000\u0000CD\u0003\u0004\u0002\u0000DE\u0005\u0010"+
+		"\u0000\u0000E\r\u0001\u0000\u0000\u0000FJ\u0005\u001f\u0000\u0000GI\u0003"+
+		"\u0002\u0001\u0000HG\u0001\u0000\u0000\u0000IL\u0001\u0000\u0000\u0000"+
+		"JH\u0001\u0000\u0000\u0000JK\u0001\u0000\u0000\u0000KM\u0001\u0000\u0000"+
+		"\u0000LJ\u0001\u0000\u0000\u0000MN\u0005 \u0000\u0000N\u000f\u0001\u0000"+
+		"\u0000\u0000OP\u0005\u0006\u0000\u0000PQ\u0003\u0004\u0002\u0000QR\u0005"+
+		"\u001d\u0000\u0000RS\u0005\u001e\u0000\u0000ST\u0003\u000e\u0007\u0000"+
+		"T\u0011\u0001\u0000\u0000\u0000UV\u0003\u0004\u0002\u0000V[\u0005\u001d"+
+		"\u0000\u0000W\\\u0003\u0004\u0002\u0000X\\\u0005)\u0000\u0000Y\\\u0005"+
+		"\u0004\u0000\u0000Z\\\u0005\u0005\u0000\u0000[W\u0001\u0000\u0000\u0000"+
+		"[X\u0001\u0000\u0000\u0000[Y\u0001\u0000\u0000\u0000[Z\u0001\u0000\u0000"+
+		"\u0000\\]\u0001\u0000\u0000\u0000]^\u0005\u001e\u0000\u0000^\u0013\u0001"+
+		"\u0000\u0000\u0000_`\u0005\u0007\u0000\u0000`a\u0005\u001d\u0000\u0000"+
+		"ab\u0005\u001e\u0000\u0000bc\u0003\u000e\u0007\u0000c\u0015\u0001\u0000"+
+		"\u0000\u0000de\u0005\b\u0000\u0000ef\u0005\u001d\u0000\u0000fg\u0005\u001e"+
+		"\u0000\u0000gh\u0003\u000e\u0007\u0000h\u0017\u0001\u0000\u0000\u0000"+
+		"ij\u0005\t\u0000\u0000jk\u0003\u000e\u0007\u0000k\u0019\u0001\u0000\u0000"+
+		"\u0000lp\u0003\u0014\n\u0000mo\u0003\u0016\u000b\u0000nm\u0001\u0000\u0000"+
+		"\u0000or\u0001\u0000\u0000\u0000pn\u0001\u0000\u0000\u0000pq\u0001\u0000"+
+		"\u0000\u0000qt\u0001\u0000\u0000\u0000rp\u0001\u0000\u0000\u0000su\u0003"+
+		"\u0018\f\u0000ts\u0001\u0000\u0000\u0000tu\u0001\u0000\u0000\u0000u\u001b"+
+		"\u0001\u0000\u0000\u0000vw\u0005\n\u0000\u0000wx\u0005\u001d\u0000\u0000"+
+		"xy\u0005!\u0000\u0000yz\u0005!\u0000\u0000z{\u0003\u000e\u0007\u0000{"+
+		"\u001d\u0001\u0000\u0000\u0000|}\u0005\u000b\u0000\u0000}~\u0005\u001d"+
+		"\u0000\u0000~\u007f\u0005\u001e\u0000\u0000\u007f\u0080\u0003\u000e\u0007"+
+		"\u0000\u0080\u001f\u0001\u0000\u0000\u0000\t\"$,2AJ[pt";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
