@@ -1,3 +1,9 @@
+import java.io.File;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Spec;
@@ -5,6 +11,8 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParameterException;
+import grammar.MCMicroprocessor8BitLexer;
+import grammar.MCMicroprocessor8BitParser;
 
 
 @Command(name = "mcc", version = "mcc " + MCCompiler.VERSION)
@@ -20,7 +28,7 @@ public class MCCompiler implements Runnable {
 
 
 	@Parameters(paramLabel = "SOURCE_FILES")
-	private String[] sourceFiles;
+	private String[] sourcePaths;
 
 	/** Whether to display help information. Help is handled automatically by picocli. */
 	@Option(names = {"-h", "--help"}, usageHelp = true,
@@ -31,6 +39,10 @@ public class MCCompiler implements Runnable {
 	@Option(names = {"-V", "--version"}, versionHelp = true,
 			description = "Display the version and exit.")
 	private boolean version;
+
+	@Option(names = {"-S"},
+			description = "Only run preprocess and compilation steps (generates `.asm' files).")
+	private boolean stopAtAsm;
 
 
 	public static void main(String[] args) {
@@ -43,34 +55,52 @@ public class MCCompiler implements Runnable {
 
 	@Override
 	public void run() {
-		if (this.sourceFiles == null)
+		if (this.sourcePaths == null)
 			throw new ParameterException(this.spec.commandLine(), "no source files");
-		
-		for (String sourceFile : this.sourceFiles)
-			System.out.println(sourceFile);
+
+		for (String sourcePath : this.sourcePaths)
+			this.compileSourceFile(sourcePath);
 	}
 
-}
 
+	public void compileSourceFile(String path) {
+		File inFile = new File(path);
+		String fileName = FileManager.name(inFile);
 
+		String source = null;
+		try {
+			source = FileManager.load(inFile);
+		}
+		catch (ParseCancellationException e) {
+			throw new ParameterException(this.spec.commandLine(), e.getMessage());
+		}
 
-/*
-import java.io.*;
-import org.antlr.v4.runtime.*;
-import grammar.*;
-
-public class MCCompiler {
-    public static void main(String args[]) throws Exception {
-		MCMicroprocessor8BitLexer lexer = new MCMicroprocessor8BitLexer(new ANTLRInputStream(System.in));
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		MCMicroprocessor8BitParser parser = new MCMicroprocessor8BitParser(tokens);
-		System.out.println(parser.var_def_bool());
-
-		Token tok = lexer.nextToken();
-		while (tok.getType() != Token.EOF) {
-			System.out.println("Lexeme='" + tok.getText() + "', Token='" + tok.getType() + "'");
-			tok = lexer.nextToken();
+		String output = this.compile(source);
+		File outFile = new File(inFile.getParent() + "/" +
+								fileName + "." +
+								(this.stopAtAsm ? "asm" : "bin"));
+		try {
+			FileManager.save(output, outFile, true);
+		}
+		catch (ParseCancellationException e) {
+			throw new ParameterException(this.spec.commandLine(), e.getMessage());
 		}
 	}
+
+
+	public String compile(String source) {
+		CodePointCharStream stream = CharStreams.fromString(source);
+		MCMicroprocessor8BitLexer lexer = new MCMicroprocessor8BitLexer(stream);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		MCMicroprocessor8BitParser parser = new MCMicroprocessor8BitParser(tokens);
+
+		RuleContext tree = parser.program();
+		System.out.println(tree.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+
+		String assembly = "";
+		if (this.stopAtAsm)
+			return assembly;
+		return null;
+	}
+
 }
-*/

@@ -28,16 +28,6 @@ public interface MCMicroprocessor8BitListener extends ParseTreeListener {
 	 */
 	void exitStatement(MCMicroprocessor8BitParser.StatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#idName}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdName(MCMicroprocessor8BitParser.IdNameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#idName}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdName(MCMicroprocessor8BitParser.IdNameContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#exprVarDefUint8}.
 	 * @param ctx the parse tree
 	 */

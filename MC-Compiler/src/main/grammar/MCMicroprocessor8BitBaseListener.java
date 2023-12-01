@@ -41,18 +41,6 @@ public class MCMicroprocessor8BitBaseListener implements MCMicroprocessor8BitLis
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdName(MCMicroprocessor8BitParser.IdNameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdName(MCMicroprocessor8BitParser.IdNameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterExprVarDefUint8(MCMicroprocessor8BitParser.ExprVarDefUint8Context ctx) { }
 	/**
 	 * {@inheritDoc}
