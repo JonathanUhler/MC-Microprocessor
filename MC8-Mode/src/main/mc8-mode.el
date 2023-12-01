@@ -7,7 +7,7 @@
 ;; Define syntactically important tokens based on their category. These are
 ;; used to build regular expressions with `regexp-opt', which are then used
 ;; to define font lock defaults.
-(defvar mc8-mode-keyword-list  `("func" "if" "elif" "else" "for" "while"))
+(defvar mc8-mode-keyword-list  `("func" "if" "elif" "else" "for" "while" "continue" "break"))
 (defvar mc8-mode-type-list     `("uint8" "bool"))
 (defvar mc8-mode-constant-list `("false" "true"))
 ;; Regular expressions from the tokens above

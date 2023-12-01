@@ -23,8 +23,8 @@ exprAssign : ID_NAME P_ASSIGN; /* MARK: finish this */
 
 body : P_LBRACE statement* P_RBRACE;
 
-funcDef  : KW_FUNC ID_NAME P_LPAR P_RPAR body;
-funcCall : ID_NAME P_LPAR (ID_NAME | ID_INTEGER | S_TRUE | S_FALSE) P_RPAR;
+funcDef  : KW_FUNC ID_NAME P_LPAR P_RPAR body; /* MARK: >1 args support */
+funcCall : ID_NAME P_LPAR (ID_NAME | ID_INTEGER | S_TRUE | S_FALSE) P_RPAR; /* MARK: >1 args */
 
 blockIf   : KW_IF P_LPAR /* MARK: add boolean expression */ P_RPAR body;
 blockElif : KW_ELIF P_LPAR /* MARK: add boolean expression */ P_RPAR body;
