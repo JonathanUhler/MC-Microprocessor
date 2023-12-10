@@ -1,0 +1,4 @@
+uint8 a = 1
+uint8 b = 2
+uint8 sum = a + b
+exit(0)

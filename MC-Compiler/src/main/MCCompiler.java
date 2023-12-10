@@ -94,8 +94,7 @@ public class MCCompiler implements Runnable {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		MCMicroprocessor8BitParser parser = new MCMicroprocessor8BitParser(tokens);
 
-		RuleContext tree = parser.program();
-		System.out.println(tree.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+		//RuleContext tree = parser.program();
 
 		String assembly = "";
 		if (this.stopAtAsm)

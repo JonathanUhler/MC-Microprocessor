@@ -1,0 +1,21 @@
+////////////////////////////////////////////////////////////////////////////////
+// U S E R   I N P U T
+//
+// Change the values below to compute `a * b`
+uint8 a = 5
+uint8 b = 17
+uint8 expected = 85
+////////////////////////////////////////////////////////////////////////////////
+
+uint8 ans = 0
+uint8 i = 0
+
+while (i != a) {
+	ans = ans + b
+	i += 1
+}
+
+if (ans != expected) {
+	exit(1)
+}
+exit(0)

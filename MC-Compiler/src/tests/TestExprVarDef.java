@@ -73,7 +73,7 @@ public class TestExprVarDef {
 		// Testing data types
 		tests.add(new Object[] {true, "bool x = true"});
 		tests.add(new Object[] {true, "bool x = false"});
-		tests.add(new Object[] {false, "bool x = other_string"});
+		tests.add(new Object[] {true, "bool x = a_variable_name"});
 		for (int i = -1000; i <= 1000; i++) {
 			if (i >= 0)
 				tests.add(new Object[] {true, "uint8 x = " + i});
@@ -104,8 +104,8 @@ public class TestExprVarDef {
 		ConfTest.setUpParser(this.input);
 		RuleContext r = ConfTest.parser.exprVarDef();
 		Assert.assertEquals("failed on input='" + this.input + "'",
-							r.getText().replaceAll("[ \t\r\n]+", ""),
-							this.input.replaceAll("[ \t\r\n]+", ""));
+							this.input.replaceAll("[ \t\r\n]+", ""),
+							r.getText().replaceAll("[ \t\r\n]+", ""));
 	}
 
 

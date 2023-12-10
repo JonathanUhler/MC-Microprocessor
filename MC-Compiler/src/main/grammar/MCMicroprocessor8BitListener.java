@@ -8,26 +8,6 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface MCMicroprocessor8BitListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#program}.
-	 * @param ctx the parse tree
-	 */
-	void enterProgram(MCMicroprocessor8BitParser.ProgramContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#program}.
-	 * @param ctx the parse tree
-	 */
-	void exitProgram(MCMicroprocessor8BitParser.ProgramContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatement(MCMicroprocessor8BitParser.StatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatement(MCMicroprocessor8BitParser.StatementContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#exprVarDefUint8}.
 	 * @param ctx the parse tree
 	 */
@@ -58,103 +38,23 @@ public interface MCMicroprocessor8BitListener extends ParseTreeListener {
 	 */
 	void exitExprVarDef(MCMicroprocessor8BitParser.ExprVarDefContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#exprAssign}.
+	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#exprBoolean}.
 	 * @param ctx the parse tree
 	 */
-	void enterExprAssign(MCMicroprocessor8BitParser.ExprAssignContext ctx);
+	void enterExprBoolean(MCMicroprocessor8BitParser.ExprBooleanContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#exprAssign}.
+	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#exprBoolean}.
 	 * @param ctx the parse tree
 	 */
-	void exitExprAssign(MCMicroprocessor8BitParser.ExprAssignContext ctx);
+	void exitExprBoolean(MCMicroprocessor8BitParser.ExprBooleanContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#body}.
+	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#exprInteger}.
 	 * @param ctx the parse tree
 	 */
-	void enterBody(MCMicroprocessor8BitParser.BodyContext ctx);
+	void enterExprInteger(MCMicroprocessor8BitParser.ExprIntegerContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#body}.
+	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#exprInteger}.
 	 * @param ctx the parse tree
 	 */
-	void exitBody(MCMicroprocessor8BitParser.BodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#funcDef}.
-	 * @param ctx the parse tree
-	 */
-	void enterFuncDef(MCMicroprocessor8BitParser.FuncDefContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#funcDef}.
-	 * @param ctx the parse tree
-	 */
-	void exitFuncDef(MCMicroprocessor8BitParser.FuncDefContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#funcCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterFuncCall(MCMicroprocessor8BitParser.FuncCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#funcCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitFuncCall(MCMicroprocessor8BitParser.FuncCallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#blockIf}.
-	 * @param ctx the parse tree
-	 */
-	void enterBlockIf(MCMicroprocessor8BitParser.BlockIfContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#blockIf}.
-	 * @param ctx the parse tree
-	 */
-	void exitBlockIf(MCMicroprocessor8BitParser.BlockIfContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#blockElif}.
-	 * @param ctx the parse tree
-	 */
-	void enterBlockElif(MCMicroprocessor8BitParser.BlockElifContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#blockElif}.
-	 * @param ctx the parse tree
-	 */
-	void exitBlockElif(MCMicroprocessor8BitParser.BlockElifContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#blockElse}.
-	 * @param ctx the parse tree
-	 */
-	void enterBlockElse(MCMicroprocessor8BitParser.BlockElseContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#blockElse}.
-	 * @param ctx the parse tree
-	 */
-	void exitBlockElse(MCMicroprocessor8BitParser.BlockElseContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#blockCond}.
-	 * @param ctx the parse tree
-	 */
-	void enterBlockCond(MCMicroprocessor8BitParser.BlockCondContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#blockCond}.
-	 * @param ctx the parse tree
-	 */
-	void exitBlockCond(MCMicroprocessor8BitParser.BlockCondContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#blockFor}.
-	 * @param ctx the parse tree
-	 */
-	void enterBlockFor(MCMicroprocessor8BitParser.BlockForContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#blockFor}.
-	 * @param ctx the parse tree
-	 */
-	void exitBlockFor(MCMicroprocessor8BitParser.BlockForContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MCMicroprocessor8BitParser#blockWhile}.
-	 * @param ctx the parse tree
-	 */
-	void enterBlockWhile(MCMicroprocessor8BitParser.BlockWhileContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MCMicroprocessor8BitParser#blockWhile}.
-	 * @param ctx the parse tree
-	 */
-	void exitBlockWhile(MCMicroprocessor8BitParser.BlockWhileContext ctx);
+	void exitExprInteger(MCMicroprocessor8BitParser.ExprIntegerContext ctx);
 }
