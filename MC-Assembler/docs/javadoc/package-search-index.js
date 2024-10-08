@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"asm"},{"l":"commands"},{"l":"commands.components"}];updateSearchResults();

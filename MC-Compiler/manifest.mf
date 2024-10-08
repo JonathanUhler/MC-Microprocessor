@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: MCCompiler
-Class-Path: lib/antlr.jar lib/picocli.jar
