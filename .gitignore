@@ -1,6 +1,5 @@
-# Compiled/artifact files
 .DS_Store
 *~
 obj
+bin
 deprecated
-**/deprecated
